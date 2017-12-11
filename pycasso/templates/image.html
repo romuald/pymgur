@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title>Some image it is</title>
+</head>
+<body>
+	<h1>{{ image.uid }}</h1>
+	<div>
+		<a href="{{ url_for('image_full', uid=image.uid) }}"><img src="{{ url_for('image_preview', uid=image.uid) }}"></a>
+	</div>
+	<div>
+		Created: {{ image.date_created }}
+	</div>
+
+</body>
+</html>

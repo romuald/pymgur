@@ -5,6 +5,8 @@ CREATE TABLE pictures (
 	height INTEGER,
 	width INTEGER,
 	status INTEGER NOT NULL DEFAULT 0, -- 0/1
+	extension TEXT,
+	thumb_extension TEXT, -- may be different (PNG -> JPEG)
 	secret TEXT,
 	date_created TIMESTAMP,
 	date_expire TIMESTAMP

@@ -17,6 +17,8 @@ app = Flask(__name__)
 app.config.update({
     'DATADIR': os.path.join(app.root_path, 'data'),
     'SECRET_KEY': 'plokiploki',
+    'TEMPLATES_AUTO_RELOAD': True,
+    'MAX_CONTENT_LENGTH': 48 * 1024 * 1024,
 })
 # app.config.from_envvar('PYCASSO_SETTINGS', silent=True)
 from . import datastore
