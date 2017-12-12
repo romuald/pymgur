@@ -149,23 +149,9 @@ class Picture:
             return cls(**res)
 
     @property
-    def has_thumbnail(self):
-        return self.status & self.HAS_THUMBNAIL
-
-    @has_thumbnail.setter
-    def has_thumbnail(self, value):
-        if value:
-            self.status |= self.HAS_THUMBNAIL
-        else:
-            self.status &= ~self.HAS_THUMBNAIL
+    def preview_width(self):
+        return int(self.width * 800 / max(self.height, self.width))
 
     @property
-    def has_preview(self):
-        return self.status & self.HAS_PREVIEW
-
-    @has_preview.setter
-    def has_preview(self, value):
-        if value:
-            self.status |= self.HAS_PREVIEW
-        else:
-            self.status &= ~self.HAS_PREVIEW
+    def preview_height(self):
+        return int(self.height * 800 / max(self.height, self.width))
