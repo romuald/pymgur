@@ -1,10 +1,11 @@
 CREATE TABLE pictures (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	uid TEXT,
+	title TEXT,
 	author TEXT,
-	height INTEGER,
 	width INTEGER,
-	status INTEGER NOT NULL DEFAULT 0, -- 0/1
+	height INTEGER,
+	status INTEGER NOT NULL DEFAULT 0, -- bitmask
 	extension TEXT,
 	thumb_extension TEXT, -- may be different (PNG -> JPEG)
 	secret TEXT,

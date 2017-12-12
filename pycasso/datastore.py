@@ -63,9 +63,10 @@ def gen_uid(length=8):
 class Picture:
     id = None
     uid = None
+    title = None
     author = None
-    height = None
     width = None
+    height = None
     status = 0
     extension = None
     thumb_extension = None
