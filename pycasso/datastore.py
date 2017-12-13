@@ -68,6 +68,7 @@ class Picture:
     width = None
     height = None
     status = 0
+    imageset = None
     extension = None
     thumb_extension = None
     secret = None
@@ -148,6 +149,22 @@ class Picture:
 
             return cls(**res)
 
+    def siblings(self):
+        if not self.imageset:
+            return []
+        
+        conn = get_db()
+        search = {'id': self.id,
+                  'imageset': self.imageset,
+                  'now': datetime.utcnow()}
+
+        SQL = 'SELECT * FROM pictures WHERE imageset=:imageset ' \
+            'AND status & 1 AND id != :id ' \
+            'AND (date_expire IS NULL OR date_expire < :now)'
+
+        with closing(conn.execute(SQL, search)) as cur:
+            return [self.__class__(**row) for row in cur]
+
     @property
     def preview_width(self):
         return int(self.width * 800 / max(self.height, self.width))
@@ -155,3 +172,16 @@ class Picture:
     @property
     def preview_height(self):
         return int(self.height * 800 / max(self.height, self.width))
+
+class ImageSet:
+    @classmethod
+    def new(cls):
+        conn = get_db()
+        with closing(conn.cursor()) as cur:
+            cur.execute('INSERT INTO imagesets (id) VALUES(NULL)')
+            ret = cur.lastrowid
+            cur.execute('DELETE FROM imagesets WHERE id=:id', {'id': ret})
+
+            conn.commit()
+            return ret
+

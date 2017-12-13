@@ -6,14 +6,17 @@
 </head>
 <body>
 	<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="from_web" value="1">
 		<div>
 			<label for="image-up">Image file</label>
 			<input id="image-up" type="file" name="i">	
 		</div>
 		<div>
+			<input type="text" name="author" value="" placeholder="Anonymous">
+		</div>
+		<div>
 			<input type="submit" value="Upload">
 		</div>
-		
 	</form>
 
 </body>

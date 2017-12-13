@@ -6,6 +6,7 @@ CREATE TABLE pictures (
 	width INTEGER,
 	height INTEGER,
 	status INTEGER NOT NULL DEFAULT 0, -- bitmask
+	imageset INTEGER,
 	extension TEXT,
 	thumb_extension TEXT, -- may be different (PNG -> JPEG)
 	secret TEXT,
@@ -14,6 +15,8 @@ CREATE TABLE pictures (
 );
 
 CREATE UNIQUE INDEX idx_pictures_uid ON pictures(uid);
+CREATE INDEX idx_pictures_imageset ON pictures(imageset)
+	WHERE imageset IS NOT NULL;
 CREATE INDEX idx_pictures_date_expire ON pictures(date_expire);
 
-CREATE TABLE sets (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);
+CREATE TABLE imagesets (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);

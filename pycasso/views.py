@@ -12,8 +12,8 @@ from flask import request, g, redirect, url_for, abort, render_template, \
 
 
 from . import app
-from .datastore import Picture
-from .utils import image_has_transparency, create_preview
+from .datastore import Picture, ImageSet
+from .utils import image_has_transparency, create_preview, request_wants_json
 
 
 FORMATS = {'PNG', 'JPEG', 'GIF'}
@@ -25,14 +25,36 @@ def post_images():
     print("files", request.files)
     print("data", request.data)
 
+    api = not request.form.get('from_web')
+
+
+    images = []
+
+    imageset = None
+    if len(request.files) > 1:
+        imageset = ImageSet.new()
+    
     for file in request.files.values():
-        image = publish_image(file)
+        image = publish_image(file, imageset)
+        images.append(image)
 
-        return redirect(url_for('image', uid=image.uid))
+    if api:
+        # XXX find a way to properly retrieve author / expiration data
+        # query string? POST /?author=Sushi&ttl=3d
+        # as JSON data
+        ret = jsonify([
+            {
+                'uid': image.uid,
+                'secret': image.secret,
+                'href': url_for('image', uid=image.uid, _external=True),
+            } for image in images
+        ])
+        ret.status_code = 201
+        return ret
 
-    return ''
+    return redirect(url_for('image', uid=images[0].uid))
 
-def publish_image(file):
+def publish_image(file, imageset):
     image = Picture.new()
     stream = file.stream
 
@@ -51,6 +73,7 @@ def publish_image(file):
 
     image.width = pimage.width
     image.height = pimage.height
+    image.imageset = imageset
 
     basedir = os.path.join(app.config['DATADIR'], image.uid[:2])
     try:
@@ -102,11 +125,41 @@ def index():
 
 @app.route('/<uid>', methods=('GET', 'POST', 'PUT', 'DELETE'))
 def image(uid):
+    if request_wants_json(request):
+        return image_as_json(uid)
+
     image = Picture.by_uid(uid)
     if not image:
         abort(404)
 
     return render_template('image.html', image=image)
+
+def image_as_json(uid):
+    image = Picture.by_uid(uid)
+    if not image:
+        # XXX error as JSON
+        abort(404)
+
+    siblings = [url_for('image', uid=sibling.uid, _external=True)
+        for sibling in image.siblings()]
+
+    data = {
+        'uid': image.uid,
+        'href': url_for('image', uid=image.uid, _external=True),
+        'image_href': url_for('image_full', uid=image.uid, _external=True),
+        'siblings': siblings,
+        'preview_href': None,
+        'thumbnail_href': None,
+    }
+
+    if image.status & image.HAS_PREVIEW:
+        data['preview_href'] = url_for('image_preview',
+                                       uid=image.uid, _external=True)
+    if image.status & image.HAS_THUMBNAIL:
+        data['thumbnail_href'] = url_for('image_thumbnail',
+                                         uid=image.uid, _external=True)
+
+    return jsonify(data)
 
 
 def image_render(uid, suffix, fallback):
