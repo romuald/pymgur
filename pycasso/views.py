@@ -26,6 +26,18 @@ def post_images():
     print("data", request.data)
 
     api = not request.form.get('from_web')
+    if api:
+        # API version: no private arg = default setting
+        try:
+            private = bool(request.form['private'])
+        except (KeyError, ValueError):
+            private = app.config['DEFAULT_PRIVATE']
+
+    else:
+        # Web version: no private arg = not private
+        private = bool(request.form.get('private'))
+
+    print('private? %r' % private)
 
     images = []
     
@@ -39,7 +51,12 @@ def post_images():
         imageset = None
 
     for image in images:
-        image.author = request.form.get('author')
+        author = request.form.get('author')
+        if author:
+            image.author = author[:30]
+
+        if private:
+            image.status |= image.PRIVATE
         image.save(commit=False)
     get_db().commit()
 
@@ -60,6 +77,7 @@ def post_images():
     if not images:
         return redirect(url_for('index'))  # XXX error, probably
     return redirect(url_for('image', uid=images[0].uid))
+
 
 def publish_image(file):
     image = Picture.new()
@@ -155,6 +173,7 @@ def image_as_json(uid):
         'uid': image.uid,
         'author': image.author,
         'title': image.title,
+        'private': bool(image.status & image.PRIVATE),
         'date_created': image.date_created,
         'date_expire': image.date_expire,
         'href': url_for('image', uid=image.uid, _external=True),

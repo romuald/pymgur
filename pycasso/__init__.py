@@ -21,6 +21,7 @@ app.config.update({
     'MAX_CONTENT_LENGTH': 48 * 1024 * 1024,
     'PREVIEW_SIZE': 800,  # in pixels
     'THUMBNAIL_SIZE':  200,  # ditto
+    'DEFAULT_PRIVATE': False,
 })
 
 # app.config.from_envvar('PYCASSO_SETTINGS', silent=True)

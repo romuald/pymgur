@@ -79,7 +79,7 @@ class Picture:
     date_expire = None
 
     ACTIVE = 1
-    PUBLIC = 2
+    PRIVATE = 2
     HAS_THUMBNAIL = 4
     HAS_PREVIEW = 8
 
