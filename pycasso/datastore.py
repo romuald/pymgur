@@ -82,6 +82,7 @@ class Picture:
     PRIVATE = 2
     HAS_THUMBNAIL = 4
     HAS_PREVIEW = 8
+    DELETING = 16
 
     @classmethod
     def new(cls):
@@ -154,6 +155,60 @@ class Picture:
                 return None
 
             return cls(**res)
+
+    @classmethod
+    def delete_many(cls, images):
+        SQL = 'DELETE FROM pictures WHERE id in (%s)'
+        SQL %= ', '.join('?' * len(images))
+
+        conn = get_db()
+        conn.execute(SQL, [img.id for img in images])
+        conn.commit()
+
+
+    @classmethod
+    def _for_cleanup(cls, query, params):
+        conn = get_db()
+
+        SQL_UPDATE = 'UPDATE pictures SET status = status | ? ' \
+                     'WHERE id IN (%s)'
+
+        ret = []
+        cur = conn.cursor()
+        try:
+            cur.execute('begin immediate transaction')
+
+            ret = [cls(**row) for row in cur.execute(query, params)]
+            
+            SQL_UPDATE %= ', '.join('?' * len(ret))
+
+            params = [cls.DELETING] + [img.id for img in ret]
+            # Debugging
+            # cur.execute(SQL_UPDATE, params)
+        finally:
+            conn.commit()
+            cur.close()
+
+        return ret
+
+    @classmethod
+    def for_cleanup_expired(cls):
+        search = {'when': datetime.utcnow(), 'deleting': cls.DELETING}
+
+        SQL_QUERY = 'SELECT * FROM pictures ' \
+                    'WHERE NOT status & :deleting AND date_expire < :when'
+
+        return cls._for_cleanup(SQL_QUERY, search)
+
+    @classmethod
+    def for_cleanup_misshap(cls):
+        search = {'when': datetime.utcnow() - timedelta(minutes=20),
+                  'status': cls.DELETING | cls.ACTIVE}
+
+        SQL_QUERY = 'SELECT * FROM pictures ' \
+                    'WHERE NOT status & :status AND date_created < :when'
+
+        return cls._for_cleanup(SQL_QUERY, search)
 
     def siblings(self):
         if not self.imageset:

@@ -1,9 +1,15 @@
 import re
 import io
-import PIL.Image
+import os.path
+from glob import glob
 
 from datetime import timedelta
 from collections import OrderedDict
+
+import PIL.Image
+
+from . import app
+from .datastore import Picture
 
 
 def image_has_transparency(image):
@@ -89,3 +95,17 @@ def parse_timespec(value):
             ret += int(num) * value
 
     return ret
+
+
+def cleanup_images():
+    to_delete = Picture.for_cleanup_misshap() + Picture.for_cleanup_expired()
+ 
+    for image in to_delete:
+        path = os.path.join(app.config['DATADIR'], image.uid[:2], image.uid)
+        path += '.*'
+
+        for file in glob(path):
+            print('DELETE', file)
+            os.remove(file)
+
+    Picture.delete_many(to_delete)

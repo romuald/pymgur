@@ -14,7 +14,7 @@ from flask import request, g, redirect, url_for, abort, render_template, \
 from . import app
 from .datastore import Picture, create_imageset, get_db
 from .utils import (image_has_transparency, create_preview, request_wants_json,
-                    parse_timespec)
+                    parse_timespec, cleanup_images)
 
 
 FORMATS = {'PNG', 'JPEG', 'GIF'}
@@ -158,6 +158,8 @@ def publish_image(file):
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
+    cleanup_images()
+
     if request.method == 'POST':
         return post_images()
 
