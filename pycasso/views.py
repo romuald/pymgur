@@ -151,6 +151,10 @@ def image_as_json(uid):
 
     data = {
         'uid': image.uid,
+        'author': image.author,
+        'title': image.title,
+        'date_created': image.date_created,
+        'date_expire': image.date_expire,
         'href': url_for('image', uid=image.uid, _external=True),
         'image_href': url_for('image_full', uid=image.uid, _external=True),
         'siblings': siblings,
