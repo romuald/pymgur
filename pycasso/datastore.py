@@ -77,8 +77,9 @@ class Picture:
     date_expire = None
 
     ACTIVE = 1
-    HAS_THUMBNAIL = 2
-    HAS_PREVIEW = 4
+    PUBLIC = 2
+    HAS_THUMBNAIL = 4
+    HAS_PREVIEW = 8
 
     @classmethod
     def new(cls):
