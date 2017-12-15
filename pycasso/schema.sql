@@ -17,6 +17,8 @@ CREATE TABLE pictures (
 CREATE UNIQUE INDEX idx_pictures_uid ON pictures(uid);
 CREATE INDEX idx_pictures_imageset ON pictures(imageset)
 	WHERE imageset IS NOT NULL;
-CREATE INDEX idx_pictures_date_expire ON pictures(date_expire);
+CREATE INDEX idx_pictures_date_created ON pictures(date_created);
+CREATE INDEX idx_pictures_date_expire ON pictures(date_expire)
+	WHERE date_expire IS NOT NULL;
 
 CREATE TABLE imagesets (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);
