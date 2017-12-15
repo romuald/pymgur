@@ -144,9 +144,9 @@ class Picture:
     def by_uid(cls, uid):
         conn = get_db()
 
-        search = {'uid': uid, 'now': datetime.utcnow()}
+        search = {'uid': uid, 'now': datetime.utcnow(), 'active': cls.ACTIVE}
 
-        SQL = 'SELECT * FROM pictures  WHERE uid=:uid AND status & 1 ' \
+        SQL = 'SELECT * FROM pictures  WHERE uid=:uid AND status & :active ' \
             'AND (date_expire IS NULL OR date_expire > :now)';
         with closing(conn.execute(SQL, search)) as cur:
             res = cur.fetchone()
@@ -161,11 +161,12 @@ class Picture:
         
         conn = get_db()
         search = {'id': self.id,
+                  'active': self.ACTIVE,
                   'imageset': self.imageset,
                   'now': datetime.utcnow()}
 
         SQL = 'SELECT * FROM pictures WHERE imageset=:imageset ' \
-            'AND status & 1 AND id != :id ' \
+            'AND status & :active AND id != :id ' \
             'AND (date_expire IS NULL OR date_expire < :now)'
 
         with closing(conn.execute(SQL, search)) as cur:
