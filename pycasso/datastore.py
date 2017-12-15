@@ -169,11 +169,13 @@ class Picture:
 
     @property
     def preview_width(self):
-        return int(self.width * 800 / max(self.height, self.width))
+        return int(self.width *
+                   app.config['PREVIEW_SIZE'] / max(self.height,self.width))
 
     @property
     def preview_height(self):
-        return int(self.height * 800 / max(self.height, self.width))
+        return int(self.height *
+                   app.config['PREVIEW_SIZE'] / max(self.height, self.width))
 
 
 def create_imageset():

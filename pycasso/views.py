@@ -100,18 +100,20 @@ def publish_image(file):
         copyfileobj(stream, output)
 
 
-    if image.width > 200 or image.height > 200:
+    psize = app.config['PREVIEW_SIZE']
+    tsize = app.config['THUMBNAIL_SIZE']
+    if image.width > tsize or image.height > tsize:
         image.status |= image.HAS_THUMBNAIL
         fullname = os.path.join(basedir, '%s.t' % image.uid)
-        fullname = create_preview(fullname, pimage, 200)
+        fullname = create_preview(fullname, pimage, tsize)
 
         image.thumb_extension = fullname[fullname.rindex('.') + 1:]
 
-    if image.width > 800 or image.height > 800:
+    if image.width > psize or image.height > psize:
         image.status |= image.HAS_PREVIEW
         fullname = os.path.join(basedir, '%s.p' % image.uid)
 
-        fullname = create_preview(fullname, pimage, 800)
+        fullname = create_preview(fullname, pimage, psize)
         image.thumb_extension = fullname[fullname.rindex('.') + 1:]
 
 
