@@ -55,10 +55,11 @@ def init_db():
 def gen_uid(length=8):
     chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-    ret = ''.join(random.choice(chars) for _ in range(length))
-    if not re.search('[0-9]', ret):
-        return gen_uid(length)
-    return ret
+    while True:
+        ret = ''.join(random.choice(chars) for _ in range(length))
+        if re.search('[0-9]', ret):
+            return ret
+
 
 class Picture:
     id = None
