@@ -1,5 +1,10 @@
+import re
 import io
 import PIL.Image
+
+from datetime import timedelta
+from collections import OrderedDict
+
 
 def image_has_transparency(image):
     """
@@ -57,3 +62,30 @@ def request_wants_json(request):
             and request.accept_mimetypes[best] >
                 request.accept_mimetypes['text/html']
             )
+
+def parse_timespec(value):
+    if value == '-':
+        return None
+
+    units = OrderedDict((
+        ('Y', timedelta(days=365)),
+        ('M', timedelta(days=30)),
+        ('D', timedelta(days=1)),
+        ('h', timedelta(hours=1)),
+        ('m', timedelta(minutes=1)),
+        ('s', timedelta(seconds=1)),
+    ))
+
+    patterns = ('(?:(?P<%s>[0-9]+)%s)?' % (unit, unit) for unit in units)
+    match = re.match('^%s$' % ''.join(patterns), value)
+
+    if not match:
+        raise ValueError('invalid time spec: %r' % value)
+
+    ret = timedelta()
+    for key, value in units.items():
+        num = match.group(key)
+        if num:
+            ret += int(num) * value
+
+    return ret

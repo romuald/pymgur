@@ -147,7 +147,7 @@ class Picture:
         search = {'uid': uid, 'now': datetime.utcnow()}
 
         SQL = 'SELECT * FROM pictures  WHERE uid=:uid AND status & 1 ' \
-            'AND (date_expire IS NULL OR date_expire < :now)';
+            'AND (date_expire IS NULL OR date_expire > :now)';
         with closing(conn.execute(SQL, search)) as cur:
             res = cur.fetchone()
             if not res:

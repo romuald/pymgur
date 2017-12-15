@@ -3,7 +3,7 @@ import os
 import os.path
 import errno
 from shutil import copyfileobj
-
+from datetime import datetime
 
 import PIL.Image
 import werkzeug.exceptions
@@ -13,7 +13,8 @@ from flask import request, g, redirect, url_for, abort, render_template, \
 
 from . import app
 from .datastore import Picture, create_imageset, get_db
-from .utils import image_has_transparency, create_preview, request_wants_json
+from .utils import (image_has_transparency, create_preview, request_wants_json,
+                    parse_timespec)
 
 
 FORMATS = {'PNG', 'JPEG', 'GIF'}
@@ -37,8 +38,15 @@ def post_images():
         # Web version: no private arg = not private
         private = bool(request.form.get('private'))
 
-    print('private? %r' % private)
+    ttl = request.form.get('ttl')
+    if not ttl:
+        ttl = app.config['DEFAULT_TTL']
 
+    ttl = parse_timespec(ttl)
+    if ttl is not None and not ttl:
+        # None is a valid result (no expiration), but 0 is not (expires now) 
+        ttl = parse_timespec(app.config['DEFAULT_TTL'])
+    print('I have ttl: %r' % ttl)
     images = []
     
     for file in request.files.values():
@@ -50,6 +58,8 @@ def post_images():
     else:
         imageset = None
 
+    expires = datetime.utcnow() + ttl if ttl else None
+
     for image in images:
         author = request.form.get('author')
         if author:
@@ -57,6 +67,10 @@ def post_images():
 
         if private:
             image.status |= image.PRIVATE
+
+        if ttl:
+            image.date_expire = expires
+
         image.save(commit=False)
     get_db().commit()
 
@@ -74,6 +88,7 @@ def post_images():
         ])
         ret.status_code = 201
         return ret
+
     if not images:
         return redirect(url_for('index'))  # XXX error, probably
     return redirect(url_for('image', uid=images[0].uid))
