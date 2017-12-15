@@ -12,7 +12,7 @@ from flask import request, g, redirect, url_for, abort, render_template, \
 
 
 from . import app
-from .datastore import Picture, ImageSet
+from .datastore import Picture, create_imageset, get_db
 from .utils import image_has_transparency, create_preview, request_wants_json
 
 
@@ -27,21 +27,27 @@ def post_images():
 
     api = not request.form.get('from_web')
 
-
     images = []
-
-    imageset = None
-    if len(request.files) > 1:
-        imageset = ImageSet.new()
     
     for file in request.files.values():
-        image = publish_image(file, imageset)
+        image = publish_image(file)
         images.append(image)
+
+    if len(images) > 1:
+        imageset = create_imageset()
+    else:
+        imageset = None
+
+    for image in images:
+        image.author = request.form.get('author')
+        image.save(commit=False)
+    get_db().commit()
 
     if api:
         # XXX find a way to properly retrieve author / expiration data
-        # query string? POST /?author=Sushi&ttl=3d
-        # as JSON data
+        # - query string POST /?author=Sushi&ttl=3d
+        # - JSON as one of the form data
+        # - one of the post data
         ret = jsonify([
             {
                 'uid': image.uid,
@@ -51,10 +57,11 @@ def post_images():
         ])
         ret.status_code = 201
         return ret
-
+    if not images:
+        return redirect(url_for('index'))  # XXX error, probably
     return redirect(url_for('image', uid=images[0].uid))
 
-def publish_image(file, imageset):
+def publish_image(file):
     image = Picture.new()
     stream = file.stream
 
@@ -73,7 +80,6 @@ def publish_image(file, imageset):
 
     image.width = pimage.width
     image.height = pimage.height
-    image.imageset = imageset
 
     basedir = os.path.join(app.config['DATADIR'], image.uid[:2])
     try:
@@ -112,7 +118,7 @@ def publish_image(file, imageset):
     image.status |= image.ACTIVE
     image.extension = ext
 
-    return image.save()
+    return image
 
 
 @app.route('/', methods=('GET', 'POST'))

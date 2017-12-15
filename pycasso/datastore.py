@@ -116,7 +116,7 @@ class Picture:
         # Used by retrieval method
         self.__dict__.update(kwargs)
 
-    def save(self):
+    def save(self, commit=True):
         conn = get_db()
 
         update_clause = []
@@ -130,7 +130,9 @@ class Picture:
         SQL = 'UPDATE pictures SET %s WHERE id=:id' % ','.join(update_clause)
         with closing(conn.cursor()) as cur:
             cur.execute(SQL, self.__dict__)
-        conn.commit()
+
+        if commit:
+            conn.commit()
 
         return self
 
@@ -173,15 +175,14 @@ class Picture:
     def preview_height(self):
         return int(self.height * 800 / max(self.height, self.width))
 
-class ImageSet:
-    @classmethod
-    def new(cls):
-        conn = get_db()
-        with closing(conn.cursor()) as cur:
-            cur.execute('INSERT INTO imagesets (id) VALUES(NULL)')
-            ret = cur.lastrowid
-            cur.execute('DELETE FROM imagesets WHERE id=:id', {'id': ret})
 
-            conn.commit()
-            return ret
+def create_imageset():
+    """Creates a new imageset id and immediatelly delete it"""
+    conn = get_db()
+    with closing(conn.cursor()) as cur:
+        cur.execute('INSERT INTO imagesets (id) VALUES(NULL)')
+        ret = cur.lastrowid
+        cur.execute('DELETE FROM imagesets WHERE id=:id', {'id': ret})
 
+        conn.commit()
+        return ret
