@@ -53,12 +53,14 @@ def init_db():
 
 
 def gen_uid(length=8):
+    ret = ''
     chars = '0123456789abcdefghijklmnopqrstuvwxyz'
 
-    while True:
+    # need at least one number
+    while not re.search('[0-9]', ret):
         ret = ''.join(random.choice(chars) for _ in range(length))
-        if re.search('[0-9]', ret):
-            return ret
+
+    return ret
 
 
 class Picture:
