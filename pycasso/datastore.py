@@ -53,7 +53,7 @@ def init_db():
 
 
 def gen_uid(length=8):
-    chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    chars = '0123456789abcdefghijklmnopqrstuvwxyz'
 
     while True:
         ret = ''.join(random.choice(chars) for _ in range(length))
