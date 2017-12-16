@@ -158,9 +158,9 @@ def publish_image(file):
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    cleanup_images()
 
     if request.method == 'POST':
+        cleanup_images()
         return post_images()
 
     return render_template('index.html')

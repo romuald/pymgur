@@ -98,7 +98,8 @@ def parse_timespec(value):
 
 
 def cleanup_images():
-    to_delete = Picture.for_cleanup_misshap() + Picture.for_cleanup_expired()
+    """Delete expired images, and images that where not fully created"""
+    to_delete = Picture.for_cleanup()
  
     for image in to_delete:
         path = os.path.join(app.config['DATADIR'], image.uid[:2], image.uid)

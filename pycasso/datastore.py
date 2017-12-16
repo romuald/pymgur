@@ -165,9 +165,12 @@ class Picture:
         conn.execute(SQL, [img.id for img in images])
         conn.commit()
 
+    @classmethod
+    def for_cleanup(cls):
+        return cls._for_cleanup_expired() + cls._for_cleanup_misshap()
 
     @classmethod
-    def _for_cleanup(cls, query, params):
+    def _for_cleanup_generic(cls, query, params):
         conn = get_db()
 
         SQL_UPDATE = 'UPDATE pictures SET status = status | ? ' \
@@ -183,8 +186,8 @@ class Picture:
             SQL_UPDATE %= ', '.join('?' * len(ret))
 
             params = [cls.DELETING] + [img.id for img in ret]
-            # Debugging
-            # cur.execute(SQL_UPDATE, params)
+
+            cur.execute(SQL_UPDATE, params)
         finally:
             conn.commit()
             cur.close()
@@ -192,23 +195,23 @@ class Picture:
         return ret
 
     @classmethod
-    def for_cleanup_expired(cls):
+    def _for_cleanup_expired(cls):
         search = {'when': datetime.utcnow(), 'deleting': cls.DELETING}
 
         SQL_QUERY = 'SELECT * FROM pictures ' \
                     'WHERE NOT status & :deleting AND date_expire < :when'
 
-        return cls._for_cleanup(SQL_QUERY, search)
+        return cls._for_cleanup_generic(SQL_QUERY, search)
 
     @classmethod
-    def for_cleanup_misshap(cls):
+    def _for_cleanup_misshap(cls):
         search = {'when': datetime.utcnow() - timedelta(minutes=20),
                   'status': cls.DELETING | cls.ACTIVE}
 
         SQL_QUERY = 'SELECT * FROM pictures ' \
                     'WHERE NOT status & :status AND date_created < :when'
 
-        return cls._for_cleanup(SQL_QUERY, search)
+        return cls._for_cleanup_generic(SQL_QUERY, search)
 
     def siblings(self):
         if not self.imageset:
