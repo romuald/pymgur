@@ -99,6 +99,7 @@ def parse_timespec(value):
 
 def cleanup_images():
     """Delete expired images, and images that where not fully created"""
+
     to_delete = Picture.for_cleanup()
  
     for image in to_delete:
@@ -106,7 +107,6 @@ def cleanup_images():
         path += '.*'
 
         for file in glob(path):
-            print('DELETE', file)
             os.remove(file)
 
     Picture.delete_many(to_delete)

@@ -46,7 +46,7 @@ def post_images():
     if ttl is not None and not ttl:
         # None is a valid result (no expiration), but 0 is not (expires now) 
         ttl = parse_timespec(app.config['DEFAULT_TTL'])
-    print('I have ttl: %r' % ttl)
+
     images = []
     
     for file in request.files.values():
@@ -238,3 +238,18 @@ def image_preview(uid):
 @app.route('/t/<uid>')
 def image_thumbnail(uid):
     return image_render(uid, '.t.%(thumb_extension)s', 'image_preview')
+
+@app.route('/i/latest')
+def latest():
+    ret = [
+        {
+            'uid': image.uid,
+            'href': url_for('image',
+                            uid=image.uid, _external=True),
+            'thumbnail_href': url_for('image_thumbnail',
+                                      uid=image.uid, _external=True),
+            'date_created': image.date_created,
+        }
+        for image in Picture.latest()]
+
+    return jsonify(ret)

@@ -42,7 +42,6 @@ def close_db(error):
 def initdb_command():
     """Creates the database tables."""
     init_db()
-    print('Initialized the database.')
 
 def init_db():
     """Initializes the database."""
@@ -147,7 +146,7 @@ class Picture:
 
         search = {'uid': uid, 'now': datetime.utcnow(), 'active': cls.ACTIVE}
 
-        SQL = 'SELECT * FROM pictures  WHERE uid=:uid AND status & :active ' \
+        SQL = 'SELECT * FROM pictures WHERE uid=:uid AND status & :active ' \
             'AND (date_expire IS NULL OR date_expire > :now)';
         with closing(conn.execute(SQL, search)) as cur:
             res = cur.fetchone()
@@ -155,6 +154,27 @@ class Picture:
                 return None
 
             return cls(**res)
+
+    @classmethod
+    def latest(cls, limit=15, include_private=False):
+        conn = get_db()
+
+        search = {'active': cls.ACTIVE,
+                  'private': cls.PRIVATE,
+                  'now': datetime.utcnow(),
+                  'limit': limit,
+                  }
+
+        SQL = 'SELECT * FROM pictures WHERE date_expire > :now ' \
+              'AND status & :active AND NOT status & :private ' \
+              'ORDER BY date_created DESC LIMIT :limit'
+
+        if include_private:
+            search['private'] = 0
+
+        with closing(conn.execute(SQL, search)) as cur:
+            return [cls(**row) for row in cur]
+
 
     @classmethod
     def delete_many(cls, images):

@@ -1,1 +1,1 @@
-FLASK_APP=pycasso PYTHONPATH=. flask run --reload
+FLASK_APP=pycasso PYTHONPATH=. flask run --reload --with-threads

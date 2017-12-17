@@ -5,12 +5,16 @@
 	<title>Some image it is</title>
 </head>
 <body>
-	<h1>{{ image.uid }}</h1>
 	<div>
 		<a href="{{ url_for('image_full', uid=image.uid) }}"><img src="{{ url_for('image_preview', uid=image.uid) }}" width="{{ image.preview_width }}" height="{{ image.preview_height }}"></a>
 	</div>
 	<div>
-		Created: {{ image.date_created }}
+		{% if image.author %}
+		By {{ image.author }},
+		{% else %}
+		<i>Anonymous</i>,
+		{% endif %}
+		{{ image.date_created }}
 	</div>
 	<script type="text/javascript">
 		document.querySelector('img').addEventListener('load', function() {
