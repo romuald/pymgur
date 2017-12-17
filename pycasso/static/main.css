@@ -1,12 +1,20 @@
 #latest {
 	text-align: center;
+	-border-top: 2px solid orange;
+	margin: 16px auto 0 auto;
+	max-width: 900px;
 }
-#latest-tmpl {
-	display: none;
+
+#loader {
+	width: 0;
+	max-width: 900px;
+	border-top: 2px solid orange;
+	margin: 0 auto 0 auto;
+	transition: width 0.3s;
 }
+
 .container {
 	display: inline-block;
-	outline: 1px dotted blue;
 	margin: 0 7px;
 	position: relative; /* so center-area can be positioned absolute */
 }
