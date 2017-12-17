@@ -1,5 +1,6 @@
 body {
 	font-family: sans-serif;
+	background-color: #f9f9f9;
 }
 
 form {
@@ -35,7 +36,23 @@ form div:last-child {
 input[type="submit"] {
 	font-size: 24px;
 	padding: 6px 20px;
+	margin-left: 0;
 	-webkit-appearance: none;
+}
+
+#imageup {
+	width: 110px;
+	border: 8px solid #595980;
+	height: 110px;
+	margin: 0 auto 0 auto;
+	color: #595980;
+	font-size: 40px;
+	position: relative;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	border-radius: 6px;
 }
 
 #latest {

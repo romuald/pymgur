@@ -10,6 +10,23 @@ function HomeLoaded() {
 			loader.style.width = ((++loaded / imgs.length) * 100) + '%';
 		};
 	}
+	var upicon =  document.querySelector("#imageup");
+	var upinput = document.querySelector("#image-up");
+
+	upinput.addEventListener("change", function() {
+		var reader = new FileReader();
+		reader.onload = function() {
+			upicon.setAttribute("style", "background-image: url(" +  this.result + ")");
+		}
+		reader.readAsDataURL(this.files[0]);
+	})
+
+	
+	upicon.addEventListener("click", function(ev) {
+		ev.preventDefault();
+		upinput.click();
+	})
+	upinput.parentNode.style.display = "none";
 }
 
 if ( document.readyState === "loading" ) {
