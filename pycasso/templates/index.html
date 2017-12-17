@@ -8,7 +8,6 @@
 </head>
 <body>
 	<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-		<input type="hidden" name="from_web" value="1">
 		<div>
 			<label for="image-up">Image file</label>
 			<input id="image-up" type="file" name="i">	
@@ -38,6 +37,11 @@
 			</select>
 		</div>
 		<div>
+			<label for="remember">Remember settings</label>
+			<input type="checkbox" id="remember" name="remember" value="1">
+		</div>
+		<div>
+			<input type="hidden" name="from_web" value="1">
 			<input type="submit" value="Upload">
 		</div>
 	</form>
