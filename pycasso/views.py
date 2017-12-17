@@ -44,11 +44,11 @@ def post_images():
 
     ttl = parse_timespec(ttl)
     if ttl is not None and not ttl:
-        # None is a valid result (no expiration), but 0 is not (expires now) 
+        # None is a valid result (no expiration), but 0 is not (expires now)
         ttl = parse_timespec(app.config['DEFAULT_TTL'])
 
     images = []
-    
+
     for file in request.files.values():
         image = publish_image(file)
         images.append(image)
@@ -155,7 +155,6 @@ def publish_image(file):
 
     return image
 
-
 @app.route('/', methods=('GET', 'POST'))
 def index():
 
@@ -163,8 +162,25 @@ def index():
         cleanup_images()
         return post_images()
 
-    return render_template('index.html',
+    latest = Picture.latest()
+
+    # Cache the "render" of URL for as it is relatively slow
+    i_href = url_for('image', uid='__uid__')
+    t_href = url_for('image_thumbnail', uid='__uid__')
+
+    def image_href(image):
+        return i_href.replace('__uid__', image.uid)
+
+    def thumbnail_href(image):
+        return i_href.replace('__uid__', image.uid)
+
+    ret = render_template('index.html',
+                           latest=latest,
+                           image_href=image_href,
+                           thumbnail_href=thumbnail_href,
                            thumbnail_size=app.config['THUMBNAIL_SIZE'])
+
+    return ret
 
 
 @app.route('/<uid>', methods=('GET', 'POST', 'PUT', 'DELETE'))
@@ -239,18 +255,3 @@ def image_preview(uid):
 @app.route('/t/<uid>')
 def image_thumbnail(uid):
     return image_render(uid, '.t.%(thumb_extension)s', 'image_preview')
-
-@app.route('/i/latest')
-def latest():
-    ret = [
-        {
-            'uid': image.uid,
-            'href': url_for('image',
-                            uid=image.uid, _external=True),
-            'thumbnail_href': url_for('image_thumbnail',
-                                      uid=image.uid, _external=True),
-            'date_created': image.date_created,
-        }
-        for image in Picture.latest()]
-
-    return jsonify(ret)

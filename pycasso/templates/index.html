@@ -44,8 +44,11 @@
 		</div>
 	</form>
 	<hr>
+
 	<div id="latest">
-		<div id="latest-tmpl" style="width: {{ thumbnail_size }}px; height: {{ thumbnail_size }}px" class="container"><a href="#" class="center-area"><div class="centered"><img></div></a></div>
+		{% for image in latest %}
+		<div style="width: {{ thumbnail_size }}px; height: {{ thumbnail_size }}px" class="container"><a href="{{ image_href(image) }}" class="center-area"><div class="centered"><img src="{{ thumbnail_href(image) }}"></div></a></div>
+		{% endfor %}
 	</div>
 </body>
 </html>
