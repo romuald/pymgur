@@ -163,7 +163,8 @@ def index():
         cleanup_images()
         return post_images()
 
-    return render_template('index.html')
+    return render_template('index.html',
+                           thumbnail_size=app.config['THUMBNAIL_SIZE'])
 
 
 @app.route('/<uid>', methods=('GET', 'POST', 'PUT', 'DELETE'))
