@@ -1,74 +1,10 @@
 <!DOCTYPE html>
 <html>
-<meta charset="utf-8">
 <head>
+	<meta charset="utf-8">
 	<title>Index</title>
-	<script type="text/javascript">
-		var $ = document.querySelector, $$ = document.querySelectorAll;
-
-		document.addEventListener('DOMContentLoaded', function() {
-			var xhr = new XMLHttpRequest();
-			xhr.addEventListener("load", function(ev) {
-				var parent = document.querySelector('#latest');
-				var count = this.response.length;
-				var tmpl = document.querySelector('#latest-tmpl');
-				tmpl.remove();
-				tmpl.removeAttribute("id");
-
-				for (var i=0, l=count; i < l; i++) {
-					var div = tmpl.cloneNode(true);
-
-					var img = div.querySelector('img')
-					img.src = this.response[i].thumbnail_href;
-					img.onload = function() {
-						if ( --count <= 0 ) {
-							console.log("finii", count);
-						}
-					};
-
-					var a = div.querySelector('a');
-					a.setAttribute("href", this.response[i].href);
-					parent.appendChild(div);
-				}
-			});
-			xhr.responseType = 'json';
-			xhr.open("GET", '/i/latest');
-			xhr.send()
-		});
-	</script>
-	<style type="text/css">
-	#latest {
-		text-align: center;
-	}
-	#latest-tmpl {
-		display: none;
-	}
-	.container {
-		display: inline-block;
-		outline: 1px dotted blue;
-		margin: 0 7px;
-		position: relative; /* so center-area can be positioned absolute */
-	}
-	.center-area {
-		/* let it fill the whole container */
-		position: absolute;
-		text-align: center;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-	}
-	.center-area:before {
-		content: '';
-		display: inline-block;
-		vertical-align: middle;
-		height: 100%;
-	}
-	.centered {
-		display: inline-block;
-		vertical-align: middle;
-	}
-	</style>
+	<script async src="{{ url_for("static", filename="home.js") }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="main.css") }}">
 </head>
 <body>
 	<style type="text/css">

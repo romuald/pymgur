@@ -1,0 +1,31 @@
+#latest {
+	text-align: center;
+}
+#latest-tmpl {
+	display: none;
+}
+.container {
+	display: inline-block;
+	outline: 1px dotted blue;
+	margin: 0 7px;
+	position: relative; /* so center-area can be positioned absolute */
+}
+.center-area {
+	/* let it fill the whole container */
+	position: absolute;
+	text-align: center;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+.center-area:before {
+	content: '';
+	display: inline-block;
+	vertical-align: middle;
+	height: 100%;
+}
+.centered {
+	display: inline-block;
+	vertical-align: middle;
+}
