@@ -172,7 +172,7 @@ def index():
         return i_href.replace('__uid__', image.uid)
 
     def thumbnail_href(image):
-        return i_href.replace('__uid__', image.uid)
+        return t_href.replace('__uid__', image.uid)
 
     ret = render_template('index.html',
                            latest=latest,
