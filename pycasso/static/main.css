@@ -18,7 +18,7 @@ input, select {
 }
 
 form div {
-	margin-top: 16px;
+	margin: 8px 0;
 	text-align: left;
 	font-size: 16px;
 }
@@ -38,6 +38,51 @@ input[type="submit"] {
 	padding: 6px 20px;
 	margin-left: 0;
 	-webkit-appearance: none;
+}
+
+.imagerow {
+	display: flex;
+	height: 35px;
+	-background-color: #ededf5;
+	transition: background 0.3s;
+	
+}
+.imagerow:hover {
+	background-color: #e4e4f5;
+}
+
+.imagerow label {
+	flex-grow: 1;
+	line-height: 35px;
+	cursor: pointer;
+}
+
+.imagerow:hover .upload-widget {
+	background-color: #3f3f66;
+}
+
+.upload-widget {
+	flex-grow: 0 !important;
+	line-height: 35px;
+	cursor: pointer;
+	color: white;
+	font-size: 35px;
+	text-align: center;
+
+	width: calc(50px);
+	height: calc(35px);
+	background-color: #595980;
+	transition: background 0.3s
+}
+.upload-preview {
+	width: 50px;
+	height: 50px;
+	max-height: 35px;
+	max-width: 50px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	margin-right: 4px;
 }
 
 #imageup {

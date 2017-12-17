@@ -8,11 +8,12 @@
 </head>
 <body>
 	<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-		<div>
-			<label for="image-up">Image file</label>
-			<input id="image-up" type="file" name="i">	
+		<div class="imagerow">
+			<label for="image0">Select an image</label>
+			<input id="image0" type="file" name="image0">
+			<span class="upload-preview"></span>
+			<label for="image0" class="upload-widget">+</label>
 		</div>
-		<div id="imageup"><span class="center-area"><span class="centered">+</span></span></div>
 		<div>
 			<label for="author">Author</label>
 			<input type="text" id="author" name="author" value="" placeholder="Anonymous">
