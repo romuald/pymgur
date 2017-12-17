@@ -156,7 +156,7 @@ class Picture:
             return cls(**res)
 
     @classmethod
-    def latest(cls, limit=15, include_private=False):
+    def latest(cls, limit=8, include_private=False):
         conn = get_db()
 
         search = {'active': cls.ACTIVE,
