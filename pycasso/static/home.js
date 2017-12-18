@@ -15,9 +15,14 @@ function HomeLoaded() {
 	function inputChange(ev) {
 		var reader = new FileReader();
 		var preview = this.parentNode.querySelector(".upload-preview");
+		var nextRow = this.parentNode.nextElementSibling;
+
 		reader.onload = function() {
 			// XXX check state just in case
 			preview.style.backgroundImage = "url(" + this.result + ")";
+			if ( nextRow ) {
+				nextRow.style.display = "";
+			}
 		}
 		reader.readAsDataURL(this.files[0]);
 	}
@@ -25,8 +30,13 @@ function HomeLoaded() {
 	var uprows = document.querySelectorAll(".imagerow");
 	for (i = 0; i < uprows.length; i++) {
 		var input = uprows[i].querySelector('input[type="file"]');
+
 		input.addEventListener("change", inputChange);
 		input.style.display = "none";
+
+		if ( i > 0 ) {
+			uprows[i].style.display = "none";
+		}
 	}
 }
 

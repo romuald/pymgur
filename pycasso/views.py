@@ -51,7 +51,9 @@ def post_images():
 
     for file in request.files.values():
         image = publish_image(file)
-        images.append(image)
+        if image:
+            images.append(image)
+
 
     if len(images) > 1:
         imageset = create_imageset()
@@ -61,6 +63,7 @@ def post_images():
     expires = datetime.utcnow() + ttl if ttl else None
 
     for image in images:
+        image.imageset = imageset
         author = request.form.get('author')
         if author:
             image.author = author[:30]
@@ -97,16 +100,26 @@ def post_images():
 def publish_image(file):
     image = Picture.new()
     stream = file.stream
+    contents = stream.read()
+    if len(contents) == 0:
+        return None
+    del contents
+    stream.seek(0)
 
     try:
         pimage = PIL.Image.open(stream)
     except Exception as exc:
         # XXX log.exception
+        print("Could not load image")
+        return None
+
         res = jsonify(error='Could not load image')
         res.status_code = 400
         return res
 
     if pimage.format not in FORMATS:
+        print('Unhandled image format: %s' % (pimage.format, ))
+        return None
         res = jsonify(error='Unhandled image format: %s' % (pimage.format, ))
         res.status_code = 400
         return res

@@ -8,12 +8,14 @@
 </head>
 <body>
 	<form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+		{% for i in range(4) %}
 		<div class="imagerow">
-			<label for="image0">Select an image</label>
-			<input id="image0" type="file" name="image0">
+			<label for="image{{ i }}">Select an image</label>
+			<input id="image{{ i }}" type="file" name="image{{ i }}">
 			<span class="upload-preview"></span>
-			<label for="image0" class="upload-widget">+</label>
+			<label for="image{{ i }}" class="upload-widget">+</label>
 		</div>
+		{% endfor %}
 		<div>
 			<label for="author">Author</label>
 			<input type="text" id="author" name="author" value="" placeholder="Anonymous">
