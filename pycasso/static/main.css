@@ -61,7 +61,7 @@ input[type="submit"] {
 	background-color: #3f3f66;
 }
 
-.upload-widget {
+.upload-widget, .remove-widget {
 	flex-grow: 0 !important;
 	line-height: 35px;
 	cursor: pointer;
@@ -73,6 +73,11 @@ input[type="submit"] {
 	height: calc(35px);
 	background-color: #595980;
 	transition: background 0.3s
+}
+
+.remove-widget {
+	background-color: #bf4021;
+	display: none;
 }
 
 .upload-preview {

@@ -16,10 +16,14 @@ function HomeLoaded() {
 		var reader = new FileReader();
 		var preview = this.parentNode.querySelector(".upload-preview");
 		var nextRow = this.parentNode.nextElementSibling;
+		var add = this.parentNode.querySelector('.upload-widget')
+		var remove = this.parentNode.querySelector('.remove-widget')
 
 		reader.onload = function() {
 			// XXX check state just in case
 			preview.style.backgroundImage = "url(" + this.result + ")";
+			add.style.display = 'none';
+			remove.style.display = 'block';
 			if ( nextRow ) {
 				nextRow.style.display = "";
 			}
@@ -29,14 +33,29 @@ function HomeLoaded() {
 
 	var uprows = document.querySelectorAll(".imagerow");
 	for (i = 0; i < uprows.length; i++) {
-		var input = uprows[i].querySelector('input[type="file"]');
+		var row = uprows[i]
+		var input = row.querySelector('input[type="file"]');
 
 		input.addEventListener("change", inputChange);
 		input.style.display = "none";
 
 		if ( i > 0 ) {
-			uprows[i].style.display = "none";
+			row.style.display = "none";
 		}
+
+		var remove = row.querySelector('.remove-widget');
+		remove.addEventListener("click", function(e) {
+			e.preventDefault();
+			var input = this.parentNode.querySelector('input[type="file"]');
+
+			input.value = null;
+			var preview = this.parentNode.querySelector(".upload-preview");
+			preview.style.backgroundImage = 'inherit';
+			this.style.display = "";
+
+			var add = this.parentNode.querySelector('.upload-widget');
+			add.style.display = 'block';
+		})
 	}
 }
 
