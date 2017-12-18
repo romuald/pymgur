@@ -11,7 +11,7 @@
 		{% for i in range(4) %}
 		<div class="imagerow">
 			<label for="image{{ i }}">Select an image</label>
-			<input id="image{{ i }}" type="file" name="image{{ i }}">
+			<input id="image{{ i }}" type="file" name="image{{ i }}" accept=".jpeg,.jpg,.gif,.png">
 			<span class="upload-preview"></span>
 			<label for="image{{ i }}" class="upload-widget">+</label>
 			<label class="remove-widget">-</label>
