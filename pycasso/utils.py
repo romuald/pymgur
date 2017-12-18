@@ -3,7 +3,7 @@ import io
 import os.path
 from glob import glob
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from collections import OrderedDict
 
 import PIL.Image
@@ -110,3 +110,21 @@ def cleanup_images():
             os.remove(file)
 
     Picture.delete_many(to_delete)
+
+
+@app.template_filter('time_since')
+def time_since(value, default="moments ago"):
+    diff = datetime.utcnow() - value
+    periods = (
+        (diff.days / 365, "year", "years"),
+        (diff.days / 30, "month", "months"),
+        (diff.days / 7, "week", "weeks"),
+        (diff.days, "day", "days"),
+        (diff.seconds / 3600, "hour", "hours"),
+        (diff.seconds / 60, "minute", "minutes"),
+        (diff.seconds, "second", "seconds"),
+    )
+    for period, singular, plural in periods:
+        if period >= 1:
+            return "%d %s ago" % (period, singular if period == 1 else plural)
+    return default

@@ -3,18 +3,20 @@
 <meta charset="utf-8">
 <head>
 	<title>Some image it is</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="main.css") }}">
 </head>
-<body>
+<body id="image-page">
 	<div>
 		<a href="{{ url_for('image_full', uid=image.uid) }}"><img src="{{ url_for('image_preview', uid=image.uid) }}" width="{{ image.preview_width }}" height="{{ image.preview_height }}"></a>
-	</div>
-	<div>
+		<div class="image-details">
 		{% if image.author %}
-		By {{ image.author }},
+		{{ image.author }}
 		{% else %}
-		<i>Anonymous</i>,
+		<i>Anonymous</i>
 		{% endif %}
-		{{ image.date_created }}
+		 —
+		<time datetime="{{ image.date_created }}">{{ image.date_created | time_since }}</time>
+		</div>
 	</div>
 	<script type="text/javascript">
 		document.querySelector('img').addEventListener('load', function() {

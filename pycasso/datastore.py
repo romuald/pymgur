@@ -15,7 +15,7 @@ def connect_db():
     dbpath = os.path.join(app.config['DATADIR'], 'pycasso.db')
     create_db = not os.path.exists(dbpath)
 
-    conn = sqlite3.connect(dbpath)
+    conn = sqlite3.connect(dbpath, detect_types=sqlite3.PARSE_DECLTYPES)
     conn.row_factory = sqlite3.Row
 
     # conn.execute('PRAGMA FOREIGN KEYS = ON;')

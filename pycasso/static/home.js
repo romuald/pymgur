@@ -14,9 +14,9 @@ function HomeLoaded() {
 
 	function inputChange(ev) {
 		var reader = new FileReader();
-		var preview = this.parentNode.querySelector(".upload-preview");
+		var preview = this.parentNode.querySelector(".add-preview");
 		var nextRow = this.parentNode.nextElementSibling;
-		var add = this.parentNode.querySelector('.upload-widget')
+		var add = this.parentNode.querySelector('.add-widget')
 		var remove = this.parentNode.querySelector('.remove-widget')
 
 		reader.onload = function() {
@@ -47,14 +47,16 @@ function HomeLoaded() {
 		remove.addEventListener("click", function(e) {
 			e.preventDefault();
 			var input = this.parentNode.querySelector('input[type="file"]');
-
 			input.value = null;
-			var preview = this.parentNode.querySelector(".upload-preview");
-			preview.style.backgroundImage = 'inherit';
-			this.style.display = "";
 
-			var add = this.parentNode.querySelector('.upload-widget');
+			var preview = this.parentNode.querySelector(".add-preview");
+			preview.style.backgroundImage = 'inherit';
+
+
+			var add = this.parentNode.querySelector('.add-widget');
 			add.style.display = 'block';
+
+			this.style.display = "";
 		})
 	}
 }

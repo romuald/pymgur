@@ -1,9 +1,9 @@
 body {
 	font-family: sans-serif;
-	background-color: #f9f9f9;
+	background-color: #f2f2f2;
 }
 
-form {
+#upload-form {
 	text-align: center;
 	max-width: 600px;
 	margin: 0 auto;
@@ -12,28 +12,28 @@ form {
 	padding: 0 16px;
 }
 
-input, select {
+#upload-form input, #upload-form select {
 	font-size: 16px;
 	margin-left: 10px;
 }
 
-form div {
+#upload-form div {
 	margin: 8px 0;
 	text-align: left;
 	font-size: 16px;
 }
 
-form div:first-child {
+#upload-form div:first-child {
 	margin-top: 0;
 }
 
 /* Submit */
-form div:last-child {
+#upload-form div:last-child {
 	margin-top: 24px;
 	text-align: center;
 }
 
-input[type="submit"] {
+#upload-form input[type="submit"] {
 	font-size: 24px;
 	padding: 6px 20px;
 	margin-left: 0;
@@ -57,11 +57,11 @@ input[type="submit"] {
 	cursor: pointer;
 }
 
-.imagerow:hover .upload-widget {
+.imagerow:hover .add-widget {
 	background-color: #3f3f66;
 }
 
-.upload-widget, .remove-widget {
+.add-widget, .remove-widget {
 	flex-grow: 0 !important;
 	line-height: 35px;
 	cursor: pointer;
@@ -80,7 +80,7 @@ input[type="submit"] {
 	display: none;
 }
 
-.upload-preview {
+.add-preview {
 	width: 50px;
 	height: 50px;
 	max-height: 35px;
@@ -91,19 +91,24 @@ input[type="submit"] {
 	margin-right: 4px;
 }
 
-#imageup {
-	width: 110px;
-	border: 8px solid #595980;
-	height: 110px;
+#image-page {
+	text-align: center;
+	margin: 0 auto;
+	display: flex;
+}
+
+
+#image-page > div {
 	margin: 0 auto 0 auto;
-	color: #595980;
-	font-size: 40px;
-	position: relative;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	cursor: pointer;
-	border-radius: 6px;
+	line-height: 0;
+}
+
+
+.image-details {
+	line-height: normal;
+	text-align: left;
+	background-color: #bfbfbf;
+	padding: 6px;
 }
 
 #latest {
