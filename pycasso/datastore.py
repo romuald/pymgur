@@ -252,13 +252,15 @@ class Picture:
 
     @property
     def preview_width(self):
-        return int(self.width *
-                   app.config['PREVIEW_SIZE'] / max(self.height,self.width))
+        value = int(self.width *
+                    app.config['PREVIEW_SIZE'] / max(self.height, self.width))
+        return value if value < self.width else self.width
 
     @property
     def preview_height(self):
-        return int(self.height *
-                   app.config['PREVIEW_SIZE'] / max(self.height, self.width))
+        value = int(self.height *
+                    app.config['PREVIEW_SIZE'] / max(self.height, self.width))
+        return value if value < self.height else self.height
 
 
 def create_imageset():
