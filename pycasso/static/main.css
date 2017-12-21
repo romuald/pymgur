@@ -93,14 +93,19 @@ body {
 
 #image-page {
 	text-align: center;
-	margin: 0 auto;
+	margin: 12px auto 0 auto;
 	display: flex;
+	flex-basis: content;
 }
 
 
 #image-page > div {
 	margin: 0 auto 0 auto;
 	line-height: 0;
+}
+
+#image-page img {
+	max-width: 100vw;
 }
 
 
