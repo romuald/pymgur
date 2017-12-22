@@ -2,8 +2,10 @@ import io
 import os
 import os.path
 import errno
+import base64
 from shutil import copyfileobj
 from datetime import datetime
+
 
 import PIL.Image
 import werkzeug.exceptions
@@ -50,9 +52,22 @@ def post_images():
     images = []
 
     for file in request.files.values():
-        image = publish_image(file)
+        image = publish_image(file.stream)
         if image:
+            print("Created image %s" % image.uid)
             images.append(image)
+
+    for name, value in request.form.items():
+        if name.startswith('bimage') and value:
+            try:
+                stream = io.BytesIO(base64.b64decode(value.encode()))
+            except:
+                raise
+
+            image = publish_image(stream)
+            if image:
+                print("Created image %s from base64" % image.uid)
+                images.append(image)
 
 
     if len(images) > 1:
@@ -73,7 +88,7 @@ def post_images():
 
         if ttl:
             image.date_expire = expires
-
+        print("Save image %s" % image.uid)
         image.save(commit=False)
     get_db().commit()
 
@@ -97,9 +112,8 @@ def post_images():
     return redirect(url_for('image', uid=images[0].uid))
 
 
-def publish_image(file):
+def publish_image(stream):
     image = Picture.new()
-    stream = file.stream
     contents = stream.read()
     if len(contents) == 0:
         return None

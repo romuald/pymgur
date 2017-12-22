@@ -11,6 +11,12 @@ body {
 	border-width: 0 1px;
 	padding: 0 16px;
 }
+.drag {
+	outline: 1px solid red;
+}
+.drag * {
+	pointer-events: none;
+}
 
 #upload-form input, #upload-form select {
 	font-size: 16px;
