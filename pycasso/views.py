@@ -57,12 +57,13 @@ def post_images():
             print("Created image %s" % image.uid)
             images.append(image)
 
+    b64i = 'base64,'
     for name, value in request.form.items():
         if name.startswith('bimage') and value:
             try:
-                if b'base64,' in value:
+                if b64i in value:
                     # data:xx/xxx;base64,
-                    value = value[value.index(b'base64,') + 1:]
+                    value = value[value.index(b64i) + len(b64i):]
                 stream = io.BytesIO(base64.b64decode(value.encode()))
             except:
                 raise

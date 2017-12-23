@@ -11,7 +11,7 @@ function updateRowPreview(input) {
 	var remove_widget = row.querySelector('.remove-widget')
 	var finput = row.querySelector('input[type="file"]');
 	var binput = row.querySelector('input[name*="bimage"]');
-	
+
 	add_widget.style.display = 'none';
 	remove_widget.style.display = 'block';
 
@@ -19,7 +19,6 @@ function updateRowPreview(input) {
 		next_row.style.display = "";
 	}
 
-	
 	if ( input === finput ) {
 		binput.value = "";
 		var reader = new FileReader();
@@ -33,6 +32,24 @@ function updateRowPreview(input) {
 	} else {
 		console.error("Unknown input", input);
 	}
+}
+
+function removeImage(e) {
+	e.preventDefault();
+
+	var row = this.parentNode
+	var input = row.querySelector('input[type="file"]');
+	var binput = row.querySelector('input[name*="bimage"]');
+	input.value = null;
+	binput.value = "";
+
+	var preview = row.querySelector(".add-preview");
+	preview.style.backgroundImage = 'inherit';
+
+	var add = this.parentNode.querySelector('.add-widget');
+	add.style.display = 'block';
+
+	this.style.display = "";
 }
 
 function HomeLoaded() {
@@ -93,7 +110,7 @@ function dragenter(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
- 	this.classList.add('drag');
+	this.classList.add('drag');
 }
 
 function dragover(e) {
@@ -123,35 +140,36 @@ function drop(e) {
 
 	this.classList.remove('drag');
 
-	var file = e.dataTransfer.files[0];
-	if ( ! file.type.startsWith('image/') ) {
-		return;
+	for ( var i=0; i < e.dataTransfer.files.length; i++ ) {
+		var file = e.dataTransfer.files[i];
+		if ( !file.type.startsWith('image/') ) {
+			continue;
+		}
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			var row = findEmptyRow();
+			if ( row === null ) {
+				return;
+			}
+
+			var input = row.querySelector('input[type*="file"]');
+			var binput = row.querySelector('input[name*="bimage"]');
+
+			input.value = null;
+			binput.value = e.target.result
+			updateRowPreview(binput);
+		};
+		reader.readAsDataURL(file);
 	}
-
-    var reader = new FileReader();
-    var row = findEmptyRow();
-    reader.onload = function(e) {
-    	if ( row === null ) {
-    		return;
-    	}
-
-    	var input = row.querySelector('input[type*="file"]');
-		var binput = row.querySelector('input[name*="bimage"]');
-
-		input.value = null;
-		binput.value = e.target.result
-		updateRowPreview(binput);
-    };
-    reader.readAsDataURL(file);
 }
 
 function dragleave(e) {
 	e.stopPropagation();
 	e.preventDefault();
-	
+
 	if ( e.target == this ) {
 		this.classList.remove('drag');
-		return;	
+		return;
 	}
 }
 
