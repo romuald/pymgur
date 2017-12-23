@@ -114,10 +114,11 @@ def post_images():
 
 def publish_image(stream):
     image = Picture.new()
-    contents = stream.read()
-    if len(contents) == 0:
+
+    if len(stream.read(1)) == 0:
+        # Empty stream
         return None
-    del contents
+
     stream.seek(0)
 
     try:
