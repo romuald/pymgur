@@ -1,6 +1,8 @@
 (function() {
 "use strict";
 
+var FINPUT = 'input[type="file"]';
+var BINPUT = 'input[type="hidden"][name*="bimage"]'
 
 function updateRowPreview(input) {
 	var row = input.parentNode;
@@ -9,8 +11,8 @@ function updateRowPreview(input) {
 	var next_row = row.nextElementSibling;
 	var add_widget = row.querySelector('.add-widget')
 	var remove_widget = row.querySelector('.remove-widget')
-	var finput = row.querySelector('input[type="file"]');
-	var binput = row.querySelector('input[name*="bimage"]');
+	var finput = row.querySelector(FINPUT);
+	var binput = row.querySelector(BINPUT);
 
 	add_widget.style.display = 'none';
 	remove_widget.style.display = 'block';
@@ -38,8 +40,8 @@ function removeImage(e) {
 	e.preventDefault();
 
 	var row = this.parentNode
-	var input = row.querySelector('input[type="file"]');
-	var binput = row.querySelector('input[name*="bimage"]');
+	var input = row.querySelector(FINPUT);
+	var binput = row.querySelector(BINPUT);
 	input.value = null;
 	binput.value = "";
 
@@ -70,7 +72,7 @@ function HomeLoaded() {
 	var uprows = document.querySelectorAll(".imagerow");
 	for (i = 0; i < uprows.length; i++) {
 		var row = uprows[i]
-		var input = row.querySelector('input[type="file"]');
+		var input = row.querySelector(FINPUT);
 
 		input.addEventListener("change", function() {
 			updateRowPreview(this);
@@ -81,22 +83,7 @@ function HomeLoaded() {
 			row.style.display = "none";
 		}
 
-		var remove = row.querySelector('.remove-widget');
-		remove.addEventListener("click", function(e) {
-			e.preventDefault();
-			var input = this.parentNode.querySelector('input[type="file"]');
-			input.value = null;
-			var binput = this.parentNode.querySelector('input[name*="bimage"]');
-			binput.value = "";
-
-			var preview = this.parentNode.querySelector(".add-preview");
-			preview.style.backgroundImage = 'inherit';
-
-			var add = this.parentNode.querySelector('.add-widget');
-			add.style.display = 'block';
-
-			this.style.display = "";
-		});
+		row.querySelector('.remove-widget').addEventListener("click", removeImage);
 	}
 
 	var form = document.querySelector('#upload-form');
@@ -123,10 +110,10 @@ function findEmptyRow() {
 
 	for ( var i=0, l=uprows.length; i<l; i++ ) {
 		var row = uprows[i];
-		var input = row.querySelector('input[type="file"]');
-		var binput = row.querySelector('input[name*="bimage"]');
+		var finput = row.querySelector(FINPUT);
+		var binput = row.querySelector(BINPUT);
 
-		if ( input.value == "" && binput.value == "" ) {
+		if ( finput.value == "" && binput.value == "" ) {
 			return row;
 		}
 	}
