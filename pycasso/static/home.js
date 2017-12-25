@@ -54,21 +54,25 @@ function removeImage(e) {
 	this.style.display = "";
 }
 
+function findEmptyRow() {
+	var uprows = document.querySelectorAll(".imagerow");
+
+	for ( var i=0; i < uprows.length; i++ ) {
+		var row = uprows[i];
+		var finput = row.querySelector(FINPUT);
+		var binput = row.querySelector(BINPUT);
+
+		if ( finput.value == "" && binput.value == "" ) {
+			return row;
+		}
+	}
+	return null;
+}
+
 function HomeLoaded() {
 	var i;
-	var imgs = document.querySelectorAll('#latest img');
 
-	var loader = document.querySelector('#loader');
-	var loaded = 0;
-
-	for (i = 0; i < imgs.length; i++) {
-		// Cannot seem to find a DOM event for missing image
-		imgs[i].onload = imgs[i].onerror = function() {
-			loader.style.width = ((++loaded / imgs.length) * 100) + '%';
-		};
-	}
-
-
+	/* Setup event for upload rows */
 	var uprows = document.querySelectorAll(".imagerow");
 	for (i = 0; i < uprows.length; i++) {
 		var row = uprows[i]
@@ -86,42 +90,50 @@ function HomeLoaded() {
 		row.querySelector('.remove-widget').addEventListener("click", removeImage);
 	}
 
+
+	/* Setup drag&drop for form */
 	var form = document.querySelector('#upload-form');
-	form.addEventListener("dragenter", dragenter, false);
-	form.addEventListener("dragover", dragover, false);
-	form.addEventListener("drop", drop, false);
-	form.addEventListener("dragleave", dragleave, false);
+	form.addEventListener("dragenter", dragEnter, false);
+	form.addEventListener("dragover", dragOver, false);
+	form.addEventListener("drop", dropImage, false);
+	form.addEventListener("dragleave", dragLeave, false);
+
+	/* Setup image progresion loader  */
+	var imgs = document.querySelectorAll('#latest img');
+	var loader = document.querySelector('#loader');
+	var loaded = 0;
+
+	for (i = 0; i < imgs.length; i++) {
+		// Cannot seem to find a DOM event for missing image
+		imgs[i].onload = imgs[i].onerror = function() {
+			loader.style.width = ((++loaded / imgs.length) * 100) + '%';
+		};
+	}
 }
 
-function dragenter(e) {
+function dragEnter(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
 	this.classList.add('drag');
 }
 
-function dragover(e) {
+function dragLeave(e) {
+	e.stopPropagation();
+	e.preventDefault();
+
+	if ( e.target == this ) {
+		this.classList.remove('drag');
+		return;
+	}
+}
+
+function dragOver(e) {
 	e.stopPropagation();
 	e.preventDefault();
 }
 
-function findEmptyRow() {
-	var uprows = document.querySelectorAll(".imagerow");
-
-	for ( var i=0, l=uprows.length; i<l; i++ ) {
-		var row = uprows[i];
-		var finput = row.querySelector(FINPUT);
-		var binput = row.querySelector(BINPUT);
-
-		if ( finput.value == "" && binput.value == "" ) {
-			return row;
-		}
-	}
-	return null;
-}
-
-function drop(e) {
-	console.log("meh??");
+function dropImage(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
@@ -147,16 +159,6 @@ function drop(e) {
 			updateRowPreview(binput);
 		};
 		reader.readAsDataURL(file);
-	}
-}
-
-function dragleave(e) {
-	e.stopPropagation();
-	e.preventDefault();
-
-	if ( e.target == this ) {
-		this.classList.remove('drag');
-		return;
 	}
 }
 
