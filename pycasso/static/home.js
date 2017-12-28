@@ -158,6 +158,8 @@ function dragLeave(e) {
 }
 
 function dragOver(e) {
+	e.dataTransfer.dropEffect = "copy";
+
 	e.stopPropagation();
 	e.preventDefault();
 }

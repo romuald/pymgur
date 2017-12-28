@@ -11,8 +11,9 @@ body {
 	border-width: 0 1px;
 	padding: 0 16px;
 }
+
 .drag {
-	outline: 1px solid red;
+	background-color: #e4e4f5;
 }
 .drag * {
 	pointer-events: none;
