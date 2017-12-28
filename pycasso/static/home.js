@@ -71,21 +71,48 @@ function findEmptyRow() {
 	return null;
 }
 
+function hideEmptyRows() {
+	var uprows = document.querySelectorAll(".imagerow");
+	var empty = 0;
+	for ( var i = 0; i < uprows.length; i++ ) {
+		var row = uprows[i];
+		var shown = ! (row.style.display === 'none');
+
+		if ( ! shown ) {
+			continue;
+		}
+
+		var finput = row.querySelector(FINPUT);
+		var binput = row.querySelector(BINPUT);
+
+		if ( finput.value == "" && binput.value == "" && empty++ > 0 ) {
+			// Does not trigger the first time
+			row.style.display = 'none';
+		}
+	}
+}
+
 function HomeLoaded() {
 	var i;
 
 	/* Setup event for upload rows */
 	var uprows = document.querySelectorAll(".imagerow");
+	var shown = 0;
 	for (i = 0; i < uprows.length; i++) {
 		var row = uprows[i]
 		var input = row.querySelector(FINPUT);
+		var binput = row.querySelector(BINPUT);
 
 		input.addEventListener("change", function() {
 			updateRowPreview(this);
 		});
 		input.style.display = "none";
 
-		if ( i > 0 ) {
+		if ( input.value != "" ) {
+			updateRowPreview(input);
+		} else if ( binput.value != "" ) {
+			updateRowPreview(binput);
+		} else if ( shown++ > 0 ) {
 			row.style.display = "none";
 		}
 
