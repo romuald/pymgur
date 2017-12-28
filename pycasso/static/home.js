@@ -52,6 +52,8 @@ function removeImage(e) {
 	add.style.display = 'block';
 
 	this.style.display = "";
+
+	hideEmptyRows();
 }
 
 function findEmptyRow() {
