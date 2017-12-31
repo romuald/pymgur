@@ -29,3 +29,6 @@ app.config.update({
 from . import datastore
 from . import views
 
+def main():
+    """Dev runner"""
+    app.run(use_reloader=True, threaded=True)
