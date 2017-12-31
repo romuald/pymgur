@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
-<meta charset="utf-8">
 <head>
+	<meta charset="utf-8">
 	<title>Some image it is</title>
+	{% for size in [16, 32, 64, 96, 144] %}
+	<link rel="icon" type="image/png" sizes="{{ size }}x{{ size }}" href="{{ url_for("static", filename="favicon{}.png".format(size)) }}">
+	{%- endfor %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="main.css") }}">
 </head>
 <body id="image-page">
