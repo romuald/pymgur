@@ -29,6 +29,7 @@ def post_images():
     print("data", request.data)
 
     api = not request.form.get('from_web')
+    xhr = 'X-From-XHR' in request.headers
     if api:
         # API version: no private arg = default setting
         try:
@@ -96,11 +97,16 @@ def post_images():
         image.save(commit=False)
     get_db().commit()
 
-    if api:
+    if api or xhr:
         # XXX find a way to properly retrieve author / expiration data
         # - query string POST /?author=Sushi&ttl=3d
         # - JSON as one of the form data
         # - one of the post data
+        if not images:
+            ret = jsonify({'error': 'No image encoded'})
+            ret.status_code = 400
+            return ret
+
         ret = jsonify([
             {
                 'uid': image.uid,

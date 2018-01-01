@@ -92,6 +92,69 @@ function hideEmptyRows() {
 	}
 }
 
+function formSubmit(ev) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", this.action);
+	xhr.setRequestHeader("X-From-XHR", "yes");
+
+	var submit = document.querySelector('input[type="submit"]');
+
+	xhr.addEventListener("load", function(e) {
+		var response;
+		try {
+			response = JSON.parse(this.response);
+		} catch (e) {}
+
+		if ( this.status == 201) {
+			window.location = response[0].href;
+		} else if ( this.status == 400 ) {
+			submit.disabled = false;
+			submit.value = submit.getAttribute('alt-std');
+			alert('Error! ' + response.error);
+		} else if ( this.status == 500 ) {
+			document.body.parentNode.innerHTML = this.response;
+		} else {
+			// XXX handle stuff
+			console.error('Unknown response: ' + this.status);
+			document.body.parentNode.innerHTML = this.response;
+		}
+	});
+
+	xhr.upload.addEventListener("progress", function(e) {
+		if (!e.lengthComputable) {
+			return;
+		}
+		var percent = e.loaded / e.total;
+
+		if 	( percent == 1 ) {
+			// Unfortunatelly does not trigger with Firefox
+			submit.style.backgroundImage = 'none';
+			submit.value = submit.getAttribute('alt-waiting');
+			return;
+		}
+
+		if ( ! /^url/.test(submit.style.backgroundImage) ) {
+			var canvas = document.createElement('canvas');
+			canvas.setAttribute('width', 10);
+			canvas.setAttribute('height', 100);
+
+			var ctx = canvas.getContext('2d');
+			ctx.fillStyle = window.getComputedStyle(submit).borderTopColor;
+			ctx.fillRect(0, 0, 10, 100);
+
+			submit.style.backgroundImage = 'url(' + canvas.toDataURL() + ')';
+		}
+
+		submit.style.backgroundPositionX = (percent * 100) + '%';
+	});
+
+	submit.disabled = true;
+	submit.value = submit.getAttribute('alt-uploading');
+	xhr.send(new FormData(this));
+
+	ev.preventDefault();
+}
+
 function HomeLoaded() {
 	var i;
 
@@ -126,6 +189,8 @@ function HomeLoaded() {
 	form.addEventListener("dragover", dragOver, false);
 	form.addEventListener("drop", dropImage, false);
 	form.addEventListener("dragleave", dragLeave, false);
+
+	form.addEventListener('submit', formSubmit);
 
 	/* Setup image progresion loader  */
 	var imgs = document.querySelectorAll('#latest img');

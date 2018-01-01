@@ -45,15 +45,26 @@ body {
 	padding: 6px 20px;
 	margin-left: 0;
 	-webkit-appearance: none;
+	border: 2px solid #d9822b;
+
+	background: #ffa500
+		no-repeat
+		0% 100%
+		linear-gradient(165deg, #ffa500 0%, #f58718 100%);
+	transition: background 0.3s;
+	/*
+	background-color: #ffa500;
+	background-repeat: no-repeat;
+	background-position: 0% 100%;
+	#eb8117*/
 }
 
 .imagerow {
 	display: flex;
 	height: 35px;
-	-background-color: #ededf5;
 	transition: background 0.3s;
-	
 }
+
 .imagerow:hover {
 	background-color: #e4e4f5;
 }
@@ -133,7 +144,7 @@ body {
 #loader {
 	width: 0;
 	max-width: 900px;
-	border-top: 2px solid orange;
+	border-top: 2px solid #ffa500;
 	margin: 0 auto 0 auto;
 	transition: width 0.3s;
 }
