@@ -26,11 +26,13 @@ function updateRowPreview(input) {
 		var reader = new FileReader();
 		reader.onload = function() {
 			preview.style.backgroundImage = "url(" + this.result + ")";
+			preview.style.display = "block";
 		}
 		reader.readAsDataURL(input.files[0]);
 	} else if ( input === binput ) {
 		finput.value = null;
 		preview.style.backgroundImage = "url(" + input.value + ")";
+		preview.style.display = "block";
 	} else {
 		console.error("Unknown input", input);
 	}
@@ -46,7 +48,8 @@ function removeImage(e) {
 	binput.value = "";
 
 	var preview = row.querySelector(".add-preview");
-	preview.style.backgroundImage = 'inherit';
+	preview.style.backgroundImage = 'none';
+	preview.style.display = "none";
 
 	var add = this.parentNode.querySelector('.add-widget');
 	add.style.display = 'block';

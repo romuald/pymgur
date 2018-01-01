@@ -106,6 +106,7 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	margin-right: 4px;
+	display: none;
 }
 
 #image-page {
