@@ -51,12 +51,11 @@ body {
 		no-repeat
 		0% 100%
 		linear-gradient(165deg, #ffa500 0%, #f58718 100%);
-	transition: background 0.3s;
-	/*
-	background-color: #ffa500;
-	background-repeat: no-repeat;
-	background-position: 0% 100%;
-	#eb8117*/
+	transition: background 0.3s, box-shadow 0.2s;
+}
+
+#upload-form input[type="submit"]:hover {
+	box-shadow: 0px 0px 10px #d9822b;
 }
 
 .imagerow {
