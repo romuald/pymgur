@@ -106,7 +106,18 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	margin-right: 4px;
-	display: none;
+}
+
+#error-messages {
+	background: #f25129 linear-gradient(178deg, #ff9999 0%, #fd6b6b 100%);
+	padding: 2px 16px;
+	border: 0 solid #4d4d54;
+	border-width: 1px 0;
+	margin: 0 -16px !important;
+}
+
+#error-messages:empty {
+   display: none;
 }
 
 #image-page {

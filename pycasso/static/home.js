@@ -108,18 +108,23 @@ function formSubmit(ev) {
 			response = JSON.parse(this.response);
 		} catch (e) {}
 
+		submit.disabled = false;
+		submit.value = submit.getAttribute('alt-std');
+
+		var errbox = document.querySelector("#error-messages");
+
 		if ( this.status == 201) {
 			window.location = response[0].href;
 		} else if ( this.status == 400 ) {
 			submit.disabled = false;
 			submit.value = submit.getAttribute('alt-std');
-			alert('Error! ' + response.error);
+			errbox.innerHTML = "<h3>" + response.error + "</h3>";
 		} else if ( this.status == 500 ) {
-			document.body.parentNode.innerHTML = this.response;
+			errbox.innerHTML = this.response
 		} else {
 			// XXX handle stuff
 			console.error('Unknown response: ' + this.status);
-			document.body.parentNode.innerHTML = this.response;
+			errbox.innerHTML = this.response;
 		}
 	});
 
