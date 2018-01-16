@@ -113,7 +113,24 @@ function formSubmit(ev) {
 
 		var errbox = document.querySelector("#error-messages");
 
-		if ( this.status == 201) {
+		if ( this.status == 201 ) {
+			var max_expire = (new Date(
+				// expire local secret in 400 days if no expiration
+				(new Date()).getTime() + 3456e7
+				)).getTime();
+			var new_uids = response.map(function(item) {
+				var expire = max_expire;
+				if ( item.date_expire ) {
+					expire = Date.parse(item.date_expire)
+				}
+				var stored = "e=" + expire + " s=" + item.secret;
+				localStorage.setItem("." + item.uid, stored);
+
+				return item.uid;
+			});
+
+
+			localStorage.setItem("new-uids", new_uids.join(","));
 			window.location = response[0].href;
 		} else if ( this.status == 400 ) {
 			submit.disabled = false;
@@ -141,6 +158,7 @@ function formSubmit(ev) {
 			return;
 		}
 
+		// Set the background image for submit button
 		if ( ! /^url/.test(submit.style.backgroundImage) ) {
 			var canvas = document.createElement('canvas');
 			canvas.setAttribute('width', 10);

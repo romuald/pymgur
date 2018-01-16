@@ -165,7 +165,8 @@ class Picture:
                   'limit': limit,
                   }
 
-        SQL = 'SELECT * FROM pictures WHERE date_expire > :now ' \
+        SQL = 'SELECT * FROM pictures ' \
+              'WHERE (date_expire IS NULL OR date_expire > :now) ' \
               'AND status & :active AND NOT status & :private ' \
               'ORDER BY date_created DESC LIMIT :limit'
 
@@ -175,6 +176,17 @@ class Picture:
         with closing(conn.execute(SQL, search)) as cur:
             return [cls(**row) for row in cur]
 
+
+    def delete(self):
+        # XXX try pass
+        from .utils import delete_image
+        delete_image(self)
+
+        # Delete in db
+        SQL = 'DELETE FROM pictures WHERE id = :id'
+        conn = get_db()
+        conn.execute(SQL, {'id': self.id})
+        conn.commit()
 
     @classmethod
     def delete_many(cls, images):

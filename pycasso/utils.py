@@ -101,16 +101,18 @@ def cleanup_images():
     """Delete expired images, and images that where not fully created"""
 
     to_delete = Picture.for_cleanup()
- 
-    for image in to_delete:
-        path = os.path.join(app.config['DATADIR'], image.uid[:2], image.uid)
-        path += '.*'
 
-        for file in glob(path):
-            os.remove(file)
+    for image in to_delete:
+        delete_image(image)
 
     Picture.delete_many(to_delete)
 
+def delete_image(image):
+    """Delete image at the filesystem level"""
+    path = os.path.join(app.config['DATADIR'], image.uid[:2], image.uid) + '.*'
+
+    for file in glob(path):
+        os.remove(file)
 
 @app.template_filter('time_since')
 def time_since(value, default="moments ago"):

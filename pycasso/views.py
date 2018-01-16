@@ -112,6 +112,7 @@ def post_images():
                 'uid': image.uid,
                 'secret': image.secret,
                 'href': url_for('image', uid=image.uid, _external=True),
+                'date_expire': image.date_expire,
             } for image in images
         ])
         ret.status_code = 201
@@ -231,6 +232,26 @@ def image(uid):
         abort(404)
 
     return render_template('image.html', image=image)
+
+@app.route('/<uid>/action', methods=('POST',))
+def image_action(uid):
+    image = Picture.by_uid(uid)
+    if not image:
+        abort(404)
+
+    secret = request.form.get('secret')
+    if secret != image.secret:
+        return abort(401, 'invalid secret')
+
+    action = request.form.get('action', '').lower()
+
+    if action == 'delete':
+        image.delete()
+        return redirect(url_for('index'))
+
+    return abort(400, 'unknown action: %s' % action)
+
+
 
 def image_as_json(uid):
     image = Picture.by_uid(uid)

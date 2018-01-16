@@ -7,25 +7,36 @@
 	<link rel="icon" type="image/png" sizes="{{ size }}x{{ size }}" href="{{ url_for("static", filename="favicon{}.png".format(size)) }}">
 	{%- endfor %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="main.css") }}">
+	<script defer src="{{ url_for("static", filename="image.js") }}"></script>
 </head>
 <body id="image-page">
-	<div>
+	<div style="max-width: {{ image.preview_width }}px">
 		<a href="{{ url_for('image_full', uid=image.uid) }}"><img src="{{ url_for('image_preview', uid=image.uid) }}" width="{{ image.preview_width }}" height="{{ image.preview_height }}"></a>
 		<div class="image-details">
-		{% if image.author %}
-		{{ image.author }}
-		{% else %}
-		<i>Anonymous</i>
-		{% endif %}
-		 —
-		<time datetime="{{ image.date_created }}">{{ image.date_created | time_since }}</time>
+			<div>
+			{% if image.author %}
+			{{ image.author }}
+			{% else %}
+			<i>Anonymous</i>
+			{% endif %}
+			 —
+			<time datetime="{{ image.date_created }}">{{ image.date_created | time_since }}</time>
+		</div>
+		<div id="action-switch"><a href="#actions">Actions</a></div>
+		</div>
+		<div id="actions">
+			<form action="{{ url_for('image_action', uid=image.uid) }}" method="post">
+				<input type="text" name="secret" placeholder="Secret">
+				<input type="submit" name="action" value="Delete">
+			</form>
+		</div>
+		<div id="secret-info">
+			<div class="single">
+				Secret: <b>$secret</b>
+			</div>
+			<span>
+			Secret has been stored in your browser and will allow you to delete or modify the image. You may note it down in case you clear your cache or use another computer</span>
 		</div>
 	</div>
-	<script type="text/javascript">
-		document.querySelector('img').addEventListener('load', function() {
-			this.removeAttribute('width');
-			this.removeAttribute('height');
-		});
-	</script>
 </body>
 </html>
