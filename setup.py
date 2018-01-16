@@ -6,11 +6,11 @@ from setuptools import setup, find_packages
 REQUIRES = ['flask', 'Pillow']
 
 setup(
-    name = 'pycasso',
+    name = 'pymgur',
     version = '0.9',
     install_requires=REQUIRES,
-    description = 'Pycasso - a python pastebin for images',
+    description = 'pymgur - a python pastebin for images',
     entry_points = {
-        'console_scripts': ['pycasso=pycasso:main'],
+        'console_scripts': ['pymgur=pymgur:main'],
     },
 )

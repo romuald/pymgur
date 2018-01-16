@@ -12,7 +12,7 @@ from . import app
 
 def connect_db():
     """Connects to the specific database."""
-    dbpath = os.path.join(app.config['DATADIR'], 'pycasso.db')
+    dbpath = os.path.join(app.config['DATADIR'], 'pymgur.db')
     create_db = not os.path.exists(dbpath)
 
     conn = sqlite3.connect(dbpath, detect_types=sqlite3.PARSE_DECLTYPES)
