@@ -16,7 +16,7 @@ render_template, flash
 app = Flask(__name__)
 app.config.update({
     'DATADIR': os.path.join(app.root_path, 'data'),
-    'SECRET_KEY': 'plokiploki',  # should not be used (yet)
+    # 'SECRET_KEY': 'plokiploki',  # should not be used (yet)
     'TEMPLATES_AUTO_RELOAD': True,
     'MAX_CONTENT_LENGTH': 48 * 1024 * 1024,
     'PREVIEW_SIZE': 800,  # in pixels
