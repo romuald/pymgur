@@ -11,7 +11,7 @@
 </head>
 <body>
 	<form id="upload-form" action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-		{% for i in range(4) %}
+		{% for i in range(app.config['MAX_IMAGES']) %}
 		<div class="imagerow">
 			<label for="image{{ i }}">Select an image</label>
 			<input id="image{{ i }}" type="file" name="image{{ i }}" accept=".jpeg,.jpg,.gif,.png">

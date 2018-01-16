@@ -24,6 +24,7 @@ app.config.update({
     'DEFAULT_PRIVATE': False,
     'DEFAULT_TTL': '7D', # YMDhms, cumulative (eg: 1M15D -> 35 days)
     'MAX_TTL': None,  # ditto, may be None for no maximum
+    'MAX_IMAGES': 8,  # maximum number of images in an imageset
 })
 
 # app.config.from_envvar('PYCASSO_SETTINGS', silent=True)

@@ -57,13 +57,20 @@ def post_images():
     images = []
 
     for file in request.files.values():
+        if len(images) > app.config['MAX_IMAGES']:
+            break
+
         image = publish_image(file.stream)
         if image:
             print("Created image %s" % image.uid)
             images.append(image)
 
+
     b64i = 'base64,'
     for name, value in request.form.items():
+        if len(images) > app.config['MAX_IMAGES']:
+            break
+
         if name.startswith('bimage') and value:
             try:
                 if b64i in value:
@@ -218,10 +225,11 @@ def index():
         return t_href.replace('__uid__', image.uid)
 
     ret = render_template('index.html',
-                           latest=latest,
-                           image_href=image_href,
-                           thumbnail_href=thumbnail_href,
-                           thumbnail_size=app.config['THUMBNAIL_SIZE'])
+                          app=app,
+                          latest=latest,
+                          image_href=image_href,
+                          thumbnail_href=thumbnail_href,
+                          thumbnail_size=app.config['THUMBNAIL_SIZE'])
 
     return ret
 
