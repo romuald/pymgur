@@ -166,6 +166,7 @@ body {
 	color: #000;
 	text-decoration: none;
 }
+
 #action-switch a:hover {
 	text-decoration: underline;
 }
@@ -175,7 +176,6 @@ body {
 }
 #actions form {
 	display: flex;
-	-justify-content: space-between;
 	align-items: stretch;
 }
 
@@ -210,7 +210,7 @@ body {
 	padding-top: 2px;
 }
 
-#latest {
+#thumbnails {
 	text-align: center;
 	-border-top: 2px solid orange;
 	margin: 16px auto 0 auto;
@@ -221,7 +221,7 @@ body {
 	width: 0;
 	max-width: 900px;
 	border-top: 2px solid #ffa500;
-	margin: 0 auto 0 auto;
+	margin: 0 auto 12px auto;
 	transition: width 0.3s;
 }
 

@@ -243,7 +243,29 @@ def image(uid):
     if not image:
         abort(404)
 
-    return render_template('image.html', image=image)
+    siblings = image.siblings()
+    if siblings:
+        # Cache the "render" of URL for as it is relatively slow
+        i_href = url_for('image', uid='__uid__')
+        t_href = url_for('image_thumbnail', uid='__uid__')
+
+        def image_href(image):
+            return i_href.replace('__uid__', image.uid)
+
+        def thumbnail_href(image):
+            return t_href.replace('__uid__', image.uid)
+    else:
+        # optim à la con ©
+        thumbnail_href = None
+        image_href = None
+
+
+    return render_template('image.html',
+                           image=image,
+                           siblings=siblings,
+                           image_href=image_href,
+                           thumbnail_href=thumbnail_href,
+                           thumbnail_size=app.config['THUMBNAIL_SIZE'])
 
 @app.route('/<uid>/action', methods=('POST',))
 def image_action(uid):

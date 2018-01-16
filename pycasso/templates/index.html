@@ -55,7 +55,7 @@
 			<input type="submit" value="Upload" alt-std="Upload" alt-uploading="Uploading…" alt-waiting="Waiting…">
 		</div>
 	</form>
-	<div id="latest">
+	<div id="thumbnails">
 		<div id="loader"></div>
 		{% for image in latest %}
 		<div style="width: {{ thumbnail_size }}px; height: {{ thumbnail_size }}px" class="container"><a href="{{ image_href(image) }}" class="center-area"><div class="centered"><img src="{{ thumbnail_href(image) }}"></div></a></div>

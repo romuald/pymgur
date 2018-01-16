@@ -9,7 +9,8 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="main.css") }}">
 	<script defer src="{{ url_for("static", filename="image.js") }}"></script>
 </head>
-<body id="image-page">
+<body>
+	<div id="image-page">
 	<div style="max-width: {{ image.preview_width }}px">
 		<a href="{{ url_for('image_full', uid=image.uid) }}"><img src="{{ url_for('image_preview', uid=image.uid) }}" width="{{ image.preview_width }}" height="{{ image.preview_height }}"></a>
 		<div class="image-details">
@@ -38,5 +39,14 @@
 			Secret has been stored in your browser and will allow you to delete or modify the image. You may note it down in case you clear your cache or use another computer</span>
 		</div>
 	</div>
+	</div>
+	{% if siblings %}
+	<div id="thumbnails">
+		<div id="loader"></div>
+		{% for image in siblings %}
+		<div style="width: {{ thumbnail_size }}px; height: {{ thumbnail_size }}px" class="container"><a href="{{ image_href(image) }}" class="center-area"><div class="centered"><img src="{{ thumbnail_href(image) }}"></div></a></div>
+		{% endfor %}
+	</div>
+	{% endif %}
 </body>
 </html>

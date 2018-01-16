@@ -219,7 +219,7 @@ function HomeLoaded() {
 	form.addEventListener('submit', formSubmit);
 
 	/* Setup image progresion loader  */
-	var imgs = document.querySelectorAll('#latest img');
+	var imgs = document.querySelectorAll('#thumbnails img');
 	var loader = document.querySelector('#loader');
 	var loaded = 0;
 

@@ -257,7 +257,8 @@ class Picture:
 
         SQL = 'SELECT * FROM pictures WHERE imageset=:imageset ' \
             'AND status & :active AND id != :id ' \
-            'AND (date_expire IS NULL OR date_expire < :now)'
+            'AND (date_expire IS NULL OR date_expire > :now) ' \
+            'ORDER BY id'
 
         with closing(conn.execute(SQL, search)) as cur:
             return [self.__class__(**row) for row in cur]
