@@ -22,7 +22,8 @@ app.config.update({
     'PREVIEW_SIZE': 800,  # in pixels
     'THUMBNAIL_SIZE':  200,  # ditto
     'DEFAULT_PRIVATE': False,
-    'DEFAULT_TTL': '7D',
+    'DEFAULT_TTL': '7D', # YMDhms, cumulative (eg: 1M15D -> 35 days)
+    'MAX_TTL': None,  # ditto, may be None for no maximum
 })
 
 # app.config.from_envvar('PYCASSO_SETTINGS', silent=True)

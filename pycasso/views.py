@@ -50,6 +50,10 @@ def post_images():
         # None is a valid result (no expiration), but 0 is not (expires now)
         ttl = parse_timespec(app.config['DEFAULT_TTL'])
 
+    # If ttl was set and a max one is configured
+    if ttl is not None and app.config['MAX_TTL']:
+        ttl = min(ttl, parse_timespec(app.config['MAX_TTL']))
+
     images = []
 
     for file in request.files.values():
