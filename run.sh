@@ -1,1 +1,1 @@
-FLASK_APP=pycasso PYTHONPATH=. flask run --reload --with-threads
+FLASK_APP=pymgur PYTHONPATH=. flask run --reload --with-threads
