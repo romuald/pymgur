@@ -64,5 +64,12 @@
 		imgs[i].onload = imgs[i].onerror = function() {
 			loader.style.width = ((++loaded / imgs.length) * 100) + '%';
 		};
+		if ( imgs[i].complete ) {
+			loaded++;
+		}
+	}
+
+	if ( loaded ) {
+		loader.style.width = ((++loaded / imgs.length) * 100) + '%';
 	}
 })()
