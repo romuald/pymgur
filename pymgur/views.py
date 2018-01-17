@@ -23,11 +23,6 @@ FORMATS = {'PNG', 'JPEG', 'GIF'}
 
 
 def post_images():
-    print("args", request.args)
-    print("form", request.form)
-    print("files", request.files)
-    print("data", request.data)
-
     api = not request.form.get('from_web')
     xhr = 'X-From-XHR' in request.headers
     if api:
