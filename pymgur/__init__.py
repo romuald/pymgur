@@ -8,9 +8,7 @@ import sqlite3
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
 render_template, flash
-
-# from .datastore import Picture
-
+from werkzeug.contrib.fixers import ProxyFix
 
 
 app = Flask(__name__)
@@ -25,7 +23,11 @@ app.config.update({
     'DEFAULT_TTL': '7D', # YMDhms, cumulative (eg: 1M15D -> 35 days)
     'MAX_TTL': None,  # ditto, may be None for no maximum
     'MAX_IMAGES': 8,  # maximum number of images in an imageset
+    'PROXIES': 1,
 })
+
+if app.config['PROXIES'] > 0:
+    app.wsgi_app = ProxyFix(app.wsgi_app, app.config['PROXIES'])
 
 # app.config.from_envvar('PYCASSO_SETTINGS', silent=True)
 from . import datastore
