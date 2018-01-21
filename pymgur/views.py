@@ -90,6 +90,8 @@ def post_images():
 
     for image in images:
         image.imageset = imageset
+        image.remote_addr = request.remote_addr
+
         author = request.form.get('author')
         if author:
             image.author = author[:30]

@@ -10,8 +10,9 @@ CREATE TABLE pictures (
 	extension TEXT,
 	thumb_extension TEXT, -- may be different (PNG -> JPEG)
 	secret TEXT,
+	remote_addr TEXT,
 	date_created TIMESTAMP,
-	date_expire TIMESTAMP
+	date_expire TIMESTAMP,
 );
 
 CREATE UNIQUE INDEX idx_pictures_uid ON pictures(uid);

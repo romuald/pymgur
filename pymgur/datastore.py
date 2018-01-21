@@ -74,6 +74,7 @@ class Picture:
     extension = None
     thumb_extension = None
     secret = None
+    remote_addr = None
     date_created = None
     date_expire = None
 
