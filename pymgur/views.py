@@ -10,7 +10,7 @@ from datetime import datetime
 import PIL.Image
 import werkzeug.exceptions
 from flask import request, g, redirect, url_for, abort, render_template, \
-    flash, jsonify, send_from_directory
+    flash, jsonify, send_from_directory, make_response
 
 
 from . import app
@@ -128,7 +128,12 @@ def post_images():
 
     if not images:
         return redirect(url_for('index'))  # XXX error, probably
-    return redirect(url_for('image', uid=images[0].uid))
+
+    res = redirect(url_for('image', uid=images[0].uid))
+    # set secret in session cookie to show it later
+    for image in images:
+        res.set_cookie('pymgur-secret.%s' % image.uid, image.secret)
+    return res
 
 
 def publish_image(stream):
@@ -256,13 +261,20 @@ def image(uid):
         thumbnail_href = None
         image_href = None
 
+    secret = request.cookies.get('pymgur-secret.%s' % image.uid)
 
-    return render_template('image.html',
-                           image=image,
-                           siblings=siblings,
-                           image_href=image_href,
-                           thumbnail_href=thumbnail_href,
-                           thumbnail_size=app.config['THUMBNAIL_SIZE'])
+    render = render_template('image.html',
+                             image=image,
+                             secret=secret,
+                             siblings=siblings,
+                             image_href=image_href,
+                             thumbnail_href=thumbnail_href,
+                             thumbnail_size=app.config['THUMBNAIL_SIZE'])
+
+    res = make_response(render)
+    if secret:
+        res.set_cookie('pymgur-secret.%s' % image.uid, '', expires=0)
+    return res
 
 @app.route('/<uid>/action', methods=('POST',))
 def image_action(uid):

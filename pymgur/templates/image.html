@@ -8,6 +8,18 @@
 	{%- endfor %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="main.css") }}">
 	<script defer src="{{ url_for("static", filename="image.js") }}"></script>
+	{% if secret %}<!-- Only true when javascript is disabled -->
+	<noscript>
+		<style type="text/css">
+			#secret-info {
+				display: block;
+			}
+			.js {
+				display: none;
+			}
+		</style>
+	</noscript>
+	{% endif %}
 </head>
 <body>
 	<div id="image-page">
@@ -27,7 +39,7 @@
 		</div>
 		<div id="actions">
 			<form action="{{ url_for('image_action', uid=image.uid) }}" method="post">
-				<input type="text" name="secret" placeholder="Secret">
+				<input type="text" name="secret" placeholder="Secret" value="{{ secret or '' }}">
 				<input type="submit" name="action" value="Delete">
 			</form>
 		</div>
@@ -35,11 +47,18 @@
 	</div>
 	<div id="secret-info">
 		<div>
-			Secret: <b>$secret</b>
+			Secret: <b>{{ secret or '$secret' }}</b>
 		</div>
-		<div>
-		Secret has been stored in your browser and will allow you to delete or modify the image. You may note it down in case you clear your cache or use another computer
+		<div class="js">
+		Secret has been stored in your browser and will allow you to delete or modify the image.
+		You may note it down in case you clear your cache or use another computer
 		</div>
+		<noscript>
+			<div>
+			This is the image secret, you should not it down in case you wish to delete the image later.
+			It has <strong>not been saved in your computer</strong>
+			</div>
+		</noscript>
 	</div>
 	</div>
 	{% if siblings %}
