@@ -131,7 +131,6 @@ body {
 }
 
 #image-page > div {
-	text-align: left;
 	margin: 0 auto 0 auto;
 	line-height: 0;
 	border: 1px solid #656570;
@@ -142,7 +141,7 @@ body {
 	max-width: 100vw;
 }
 
-.image-details, #secret-info {
+.image-details {
 	line-height: normal;
 	background-color: #cacae0;
 	border-top: 1px solid #656570;
@@ -196,23 +195,25 @@ body {
 }
 
 #secret-info {
-	background-color: #ffff33;
+	text-align: center;
+	margin: 16px auto 0 auto;
+	max-width: 560px;
+	background-color: #ffff99;
 	display: none;
+	padding: 7px;
 }
 
 #secret-info b {
 	font-family: monospace;
 }
 
-#secret-info span {
-	display: block;
-	font-size: 12px;
-	padding-top: 2px;
+#secret-info div {
+	text-align: left;
+	margin-bottom: 6px
 }
 
 #thumbnails {
 	text-align: center;
-	-border-top: 2px solid orange;
 	margin: 16px auto 0 auto;
 	max-width: 900px;
 }
