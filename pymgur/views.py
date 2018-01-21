@@ -130,8 +130,6 @@ def post_images():
 
 
 def publish_image(stream):
-    image = Picture.new()
-
     if len(stream.read(1)) == 0:
         # Empty stream
         return None
@@ -155,6 +153,8 @@ def publish_image(stream):
         res = jsonify(error='Unhandled image format: %s' % (pimage.format, ))
         res.status_code = 400
         return res
+
+    image = Picture.new()
 
     image.width = pimage.width
     image.height = pimage.height
