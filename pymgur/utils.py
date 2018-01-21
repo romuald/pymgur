@@ -128,5 +128,5 @@ def time_since(value, default="moments ago"):
     )
     for period, singular, plural in periods:
         if period >= 1:
-            return "%d %s ago" % (period, singular if period == 1 else plural)
+            return "%d %s ago" % (period, singular if period < 2 else plural)
     return default
