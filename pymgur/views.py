@@ -230,6 +230,8 @@ def index():
                           app=app,
                           latest=latest,
                           image_href=image_href,
+                          default_ttl=app.config['DEFAULT_TTL'],
+                          ttls=app.config['TTLS'],
                           thumbnail_href=thumbnail_href,
                           thumbnail_size=app.config['THUMBNAIL_SIZE'])
 

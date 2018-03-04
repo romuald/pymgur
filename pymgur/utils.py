@@ -114,19 +114,40 @@ def delete_image(image):
     for file in glob(path):
         os.remove(file)
 
+
 @app.template_filter('time_since')
 def time_since(value, default="moments ago"):
     diff = datetime.utcnow() - value
+
+    ret = time_unit(diff)
+    if ret == '':
+        return default
+
+    return '%s ago' % ret
+
+
+def time_unit(value):
+    if value is None:
+        return 'Never'
+
     periods = (
-        (diff.days / 365, "year", "years"),
-        (diff.days / 30, "month", "months"),
-        (diff.days / 7, "week", "weeks"),
-        (diff.days, "day", "days"),
-        (diff.seconds / 3600, "hour", "hours"),
-        (diff.seconds / 60, "minute", "minutes"),
-        (diff.seconds, "second", "seconds"),
+        (value.days / 365, "year", "years"),
+        (value.days / 30, "month", "months"),
+        (value.days / 7, "week", "weeks"),
+        (value.days, "day", "days"),
+        (value.seconds / 3600, "hour", "hours"),
+        (value.seconds / 60, "minute", "minutes"),
+        (value.seconds, "second", "seconds"),
     )
+
     for period, singular, plural in periods:
         if period >= 1:
-            return "%d %s ago" % (period, singular if period < 2 else plural)
-    return default
+            return '%d %s' % (period, singular if period < 2 else plural)
+
+    return ''  # < 1s
+
+
+@app.template_filter('time_unit')
+def time_unit_tmpl(value):
+    value = parse_timespec(value)
+    return time_unit(value)

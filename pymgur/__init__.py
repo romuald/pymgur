@@ -23,6 +23,7 @@ app.config.update({
     'DEFAULT_TTL': '7D', # YMDhms, cumulative (eg: 1M15D -> 35 days)
     'MAX_TTL': None,  # ditto, may be None for no maximum
     'MAX_IMAGES': 8,  # maximum number of images in an imageset
+    'TTLS': ['10s', '1h', '3h', '6h', '1D', '3D', '7D', '1M', '3M', '6M', '-'],
     'PROXIES': 1,
 })
 
