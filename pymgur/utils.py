@@ -50,7 +50,8 @@ def create_preview(filename, image, size):
         if ext == "jpg":
             # In case of indexed palette, JPEG mut be converted to RGB
             image = image.convert('RGB')
-            image.save(output, quality=75, optimize=True, progressive=True)
+            image.save(output, quality=app.config['JPEG_QUALITY'],
+                       optimize=True, progressive=True)
         else:  # png
             image.save(output, optimize=True)
 
