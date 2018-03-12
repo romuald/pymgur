@@ -71,7 +71,7 @@ def configure():
     values = {k.upper(): config_value(k, v) for k, v in section.items()}
 
     # TTLS is a list
-    values['TTLS'] = map(str.strip, values['TTLS'].split(','))
+    values['TTLS'] = [value.strip() for value in values['TTLS'].split(',')]
     app.config.update(values)
 
 
