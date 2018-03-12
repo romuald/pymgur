@@ -12,8 +12,8 @@ and to allow you to easily post images via curl
 Requirements are :
 
 - python 3
-- flask (web framework)
-- pillow (image library)
+- [flask](http://flask.pocoo.org/) (web framework)
+- [pillow](https://github.com/python-pillow/Pillow) (image library)
 
 Images are stored locally on the filesystem and image metadata is stored in a sqlite database
 
@@ -21,6 +21,9 @@ Images are stored locally on the filesystem and image metadata is stored in a sq
 A demo site is available at http://pymgur.chivil.com/
 
 
-Current version should he usable but totally lacks configuration (hard-coded in the init file)
+Current version should he usable without too much hassle
 
 README to be continued …
+
+- how to install
+- list config options
