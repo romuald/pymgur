@@ -72,7 +72,11 @@ def configure():
 
     # TTLS is a list
     values['TTLS'] = [value.strip() for value in values['TTLS'].split(',')]
+
     app.config.update(values)
+
+    # Workaround Flask issue
+    app.jinja_env.auto_reload = values['TEMPLATES_AUTO_RELOAD']
 
 
 from . import datastore
