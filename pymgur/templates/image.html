@@ -22,6 +22,7 @@
 	{% endif %}
 </head>
 <body>
+	{% include "header.html" %}
 	<div id="image-page">
 	<div>
 		<a href="{{ url_for('image_full', uid=image.uid) }}"><img src="{{ url_for('image_preview', uid=image.uid) }}" width="{{ image.preview_width }}" height="{{ image.preview_height }}"></a>

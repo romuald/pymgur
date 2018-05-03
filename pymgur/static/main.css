@@ -1,7 +1,39 @@
 body {
 	font-family: sans-serif;
 	background-color: #f2f2f2;
+	margin: 0;
 }
+
+header {
+	background-color: #baa057;
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 1px solid #cfb161;
+	margin-bottom: 12px;
+}
+
+header > section {
+	padding: 4px 9px;
+	font-variant: small-caps;
+}
+
+header a {
+	color: #332c18;
+	text-decoration: none;
+}
+header a:hover {
+	text-decoration: underline;
+}
+
+#head-idx {
+	font-weight: bold;
+}
+#head-idx img {
+	margin: 0 5px -3px 0;
+	width: 16px;
+	height: 16px;
+}
+
 
 #upload-form {
 	text-align: center;
