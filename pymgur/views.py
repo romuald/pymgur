@@ -9,13 +9,13 @@ from datetime import datetime
 
 import PIL.Image
 import werkzeug.exceptions
-from flask import request, g, redirect, url_for, abort, render_template, \
-    flash, jsonify, send_from_directory, make_response
+from flask import request, redirect, url_for, abort, render_template, \
+    jsonify, send_from_directory, make_response
 
 
 from . import app
 from .datastore import Picture, create_imageset, get_db
-from .utils import (image_has_transparency, create_preview, request_wants_json,
+from .utils import (create_preview, request_wants_json,
                     parse_timespec, cleanup_images)
 
 
@@ -60,7 +60,6 @@ def post_images():
             print("Created image %s" % image.uid)
             images.append(image)
 
-
     b64i = 'base64,'
     for name, value in request.form.items():
         if len(images) > app.config['MAX_IMAGES']:
@@ -72,14 +71,13 @@ def post_images():
                     # data:xx/xxx;base64,
                     value = value[value.index(b64i) + len(b64i):]
                 stream = io.BytesIO(base64.b64decode(value.encode()))
-            except:
+            except Exception:
                 raise
 
             image = publish_image(stream)
             if image:
                 print("Created image %s from base64" % image.uid)
                 images.append(image)
-
 
     if len(images) > 1:
         imageset = create_imageset()
@@ -184,7 +182,6 @@ def publish_image(stream):
     with io.open(fullname, 'wb+') as output:
         copyfileobj(stream, output)
 
-
     psize = app.config['PREVIEW_SIZE']
     tsize = app.config['THUMBNAIL_SIZE']
     if image.width > tsize or image.height > tsize:
@@ -201,11 +198,11 @@ def publish_image(stream):
         fullname = create_preview(fullname, pimage, psize)
         image.thumb_extension = fullname[fullname.rindex('.') + 1:]
 
-
     image.status |= image.ACTIVE
     image.extension = ext
 
     return image
+
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -278,6 +275,7 @@ def image(uid):
         res.set_cookie('pymgur-secret.%s' % image.uid, '', expires=0)
     return res
 
+
 @app.route('/<uid>/action', methods=('POST',))
 def image_action(uid):
     image = Picture.by_uid(uid)
@@ -297,7 +295,6 @@ def image_action(uid):
     return abort(400, 'unknown action: %s' % action)
 
 
-
 def image_as_json(uid):
     image = Picture.by_uid(uid)
     if not image:
@@ -305,7 +302,7 @@ def image_as_json(uid):
         abort(404)
 
     siblings = [url_for('image', uid=sibling.uid, _external=True)
-        for sibling in image.siblings()]
+                for sibling in image.siblings()]
 
     data = {
         'uid': image.uid,
@@ -347,9 +344,11 @@ def image_render(uid, suffix, fallback):
             return redirect(url_for(fallback, uid=image.uid), code=301)
         raise
 
+
 @app.route('/i/<uid>')
 def image_full(uid):
     return image_render(uid, '.%(extension)s', None)
+
 
 @app.route('/p/<uid>')
 def image_preview(uid):

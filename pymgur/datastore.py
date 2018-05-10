@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import random
 import os.path
 
-from flask import Flask, request, session, g
+from flask import g
 
 from . import app
 
@@ -24,6 +24,7 @@ def connect_db():
         init_db()
     return conn
 
+
 def get_db():
     """Opens a new database connection if there is none yet for the
     current application context.
@@ -32,16 +33,19 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
+
 @app.teardown_appcontext
 def close_db(error):
     """Closes the database again at the end of the request."""
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+
 @app.cli.command('initdb')
 def initdb_command():
     """Creates the database tables."""
     init_db()
+
 
 def init_db():
     """Initializes the database."""
@@ -97,10 +101,10 @@ class Picture:
                 uid = gen_uid()
                 data = {
                     'uid': uid,
-                    'secret': gen_uid(16),
+                    'secret': secret,
                     'date_created': now,
                 }
-                
+
                 try:
                     cur.execute(SQL, data)
                 except sqlite3.IntegrityError:
@@ -127,8 +131,8 @@ class Picture:
         update_clause = []
         for name in self.__dict__:
             if (not (name.startswith('_')
-                    or re.match('^[_0-9a-z]+$', name)
-                    or name == 'id')):
+                     or re.match('^[_0-9a-z]+$', name)
+                     or name == 'id')):
                 continue
             update_clause.append(' %s = :%s' % (name, name))
 
@@ -148,7 +152,7 @@ class Picture:
         search = {'uid': uid, 'now': datetime.utcnow(), 'active': cls.ACTIVE}
 
         SQL = 'SELECT * FROM pictures WHERE uid=:uid AND status & :active ' \
-            'AND (date_expire IS NULL OR date_expire > :now)';
+            'AND (date_expire IS NULL OR date_expire > :now)'
         with closing(conn.execute(SQL, search)) as cur:
             res = cur.fetchone()
             if not res:
@@ -176,7 +180,6 @@ class Picture:
 
         with closing(conn.execute(SQL, search)) as cur:
             return [cls(**row) for row in cur]
-
 
     def delete(self):
         # XXX try pass
@@ -215,7 +218,7 @@ class Picture:
             cur.execute('begin immediate transaction')
 
             ret = [cls(**row) for row in cur.execute(query, params)]
-            
+
             SQL_UPDATE %= ', '.join('?' * len(ret))
 
             params = [cls.DELETING] + [img.id for img in ret]
@@ -249,7 +252,7 @@ class Picture:
     def siblings(self):
         if not self.imageset:
             return []
-        
+
         conn = get_db()
         search = {'id': self.id,
                   'active': self.ACTIVE,

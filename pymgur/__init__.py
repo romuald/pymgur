@@ -1,18 +1,11 @@
 import os
 import os.path
-import re
-import ast
-import random
 import argparse
 import configparser
 
-from pprint import pprint
-from datetime import datetime, timedelta
-from contextlib import closing
-import sqlite3
+from pprint import pprint  # noqa
 
-from flask import Flask, request, session, g, redirect, url_for, abort, \
-    render_template, flash
+from flask import Flask
 from werkzeug.contrib.fixers import ProxyFix
 
 
@@ -33,7 +26,8 @@ def config_value(key, value):
     if value == '':
         return None
 
-    return {'TEMPLATES_AUTO_RELOAD': boolean,
+    return {
+            'TEMPLATES_AUTO_RELOAD': boolean,
             'MAX_CONTENT_LENGTH': int,
             'PREVIEW_SIZE': int,
             'THUMBNAIL_SIZE': int,
@@ -80,8 +74,9 @@ def configure():
     from .template_filters import noop  # noqa
 
 
-from . import datastore
-from . import views
+from . import datastore  # noqa
+from . import views  # noqa
+
 
 def main():
     """Dev runner"""

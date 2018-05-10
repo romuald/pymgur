@@ -3,7 +3,7 @@ import io
 import os.path
 from glob import glob
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from collections import OrderedDict
 
 import PIL.Image
@@ -35,6 +35,7 @@ def image_has_transparency(image):
 
     return True
 
+
 def create_preview(filename, image, size):
     """Creates a smaller static image, used for thumbnail and previews"""
     # Thumbnail starts here
@@ -60,6 +61,7 @@ def create_preview(filename, image, size):
     return filename
     return output, ext
 
+
 def request_wants_json(request):
     # http://flask.pocoo.org/snippets/45/
     best = request.accept_mimetypes.best_match(('application/json',
@@ -68,7 +70,8 @@ def request_wants_json(request):
             best == 'application/json'
             and request.accept_mimetypes[best] >
                 request.accept_mimetypes['text/html']
-            )
+            )  # noqa
+
 
 def parse_timespec(value):
     if value == '-':
@@ -108,6 +111,7 @@ def cleanup_images():
 
     Picture.delete_many(to_delete)
 
+
 def delete_image(image):
     """Delete image at the filesystem level"""
     path = os.path.join(app.config['DATADIR'], image.uid[:2], image.uid) + '.*'
@@ -135,4 +139,3 @@ def time_unit(value):
             return '%d %s' % (period, singular if period < 2 else plural)
 
     return ''  # < 1s
-
