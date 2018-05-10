@@ -35,13 +35,17 @@ def config_value(key, value):
             'MAX_IMAGES': int,
             'PROXIES': int,
             'JPEG_QUALITY': int,
+            'DEBUG': boolean,
         }.get(key.upper(), str)(value)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='TBD')
 
-    parser.add_argument('--config', '-c', type=argparse.FileType('r'))
+    parser.add_argument('--config', '-c', type=argparse.FileType('r'),
+                        help='Configuration file')
+    parser.add_argument('--datadir', '-d',
+                        help='data directory (overwritten from configuration)')
 
     return parser.parse_args()
 
@@ -62,6 +66,11 @@ def configure():
         'app_root_path': mydir,
         'run_path': os.getcwd()
     })
+    if args.datadir:
+        if not os.path.isdir(args.datadir):
+            raise RuntimeError('directory %r does not exists' % args.datadir)
+
+        section.update({'datadir': args.datadir})
     values = {k.upper(): config_value(k, v) for k, v in section.items()}
 
     # TTLS is a list
