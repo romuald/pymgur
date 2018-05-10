@@ -75,8 +75,9 @@ def configure():
 
     app.config.update(values)
 
-    # Workaround Flask issue
-    app.jinja_env.auto_reload = values['TEMPLATES_AUTO_RELOAD']
+    # Workaround Flask issue, filters needs to be set up after the configure
+    # otherwise some options won't be applied
+    from .template_filters import noop  # noqa
 
 
 from . import datastore

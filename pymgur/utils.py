@@ -116,17 +116,6 @@ def delete_image(image):
         os.remove(file)
 
 
-@app.template_filter('time_since')
-def time_since(value, default="moments ago"):
-    diff = datetime.utcnow() - value
-
-    ret = time_unit(diff)
-    if ret == '':
-        return default
-
-    return '%s ago' % ret
-
-
 def time_unit(value):
     if value is None:
         return 'Never'
@@ -147,8 +136,3 @@ def time_unit(value):
 
     return ''  # < 1s
 
-
-@app.template_filter('time_unit')
-def time_unit_tmpl(value):
-    value = parse_timespec(value)
-    return time_unit(value)
