@@ -26,6 +26,7 @@ def config_value(key, value):
         return None
 
     return {
+            'AUTO_RELOAD': boolean,
             'TEMPLATES_AUTO_RELOAD': boolean,
             'MAX_CONTENT_LENGTH': int,
             'PREVIEW_SIZE': int,
@@ -100,4 +101,5 @@ def main():
 
     if app.config['PROXIES'] > 0:
         app.wsgi_app = ProxyFix(app.wsgi_app, app.config['PROXIES'])
-    app.run(use_reloader=True, threaded=True, load_dotenv=False)
+    app.run(use_reloader=app.config['AUTO_RELOAD'],
+            threaded=True, load_dotenv=False)
