@@ -8,7 +8,7 @@ from flask import Flask
 from werkzeug.contrib.fixers import ProxyFix
 
 
-app = Flask(__name__)
+app = application = Flask(__name__)
 
 
 def boolean(value):
