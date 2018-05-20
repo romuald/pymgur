@@ -1,5 +1,4 @@
 import os
-import os.path
 import argparse
 import configparser
 
@@ -53,19 +52,30 @@ def parse_args():
 def configure():
     args = parse_args()
 
-    mydir = os.path.dirname(__file__)
+    mydir = os.path.abspath(os.path.dirname(__file__))
 
     cparser = configparser.ConfigParser()
     cparser.read(os.path.join(mydir, 'pymgur.default.ini'))
 
+    config_file = None
+
     if args.config:
-        cparser.read_string(args.config.read())
+        config_file = args.config
+    elif os.environ.get('PYMGUR_CONFIG'):
+        config_file = open(os.environ['PYMGUR_CONFIG'])
+
+    if config_file:
+        print('Using configuration: %r'  % config_file.name)
+        cparser.read_string(config_file.read())
+    else:
+        print('Using default configuration')
 
     section = cparser['pymgur']
     section.update({
         'app_root_path': mydir,
         'run_path': os.getcwd()
     })
+
     if args.datadir:
         if not os.path.isdir(args.datadir):
             raise RuntimeError('directory %r does not exists' % args.datadir)
@@ -78,18 +88,15 @@ def configure():
 
     app.config.update(values)
 
-    # Workaround Flask issue, filters needs to be set up after the configure
-    # otherwise some options won't be applied
-    from .template_filters import noop  # noqa
 
+configure()
 
 from . import datastore  # noqa
 from . import views  # noqa
-
+from .template_filters import noop  # noqa
 
 def main():
     """Dev runner"""
-    configure()
 
     if app.config['PROXIES'] > 0:
         app.wsgi_app = ProxyFix(app.wsgi_app, app.config['PROXIES'])
