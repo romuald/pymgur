@@ -36,6 +36,41 @@ def image_has_transparency(image):
     return True
 
 
+def exif_transpose(image, exif_data):
+    """Rotate / transpose a thumbnal according to the EXIF metadata
+
+    Thanks to https://beradrian.wordpress.com/2008/11/14/rotate-exif-images/
+    """
+
+    operations = (
+        (0, None),
+        (0, PIL.Image.FLIP_LEFT_RIGHT),
+        (-180, None),
+        (0, PIL.Image.FLIP_TOP_BOTTOM),
+        (-90, PIL.Image.FLIP_LEFT_RIGHT),
+        (-90, None),
+        (90, PIL.Image.FLIP_LEFT_RIGHT),
+        (90, None),
+    )
+    orientation = exif_data and exif_data.get(274)
+
+    if not orientation:
+        return image
+
+    try:
+        rotate, transpose = operations[orientation - 1]
+    except IndexError:
+        # Invalid orientation in EXIF data
+        return image
+
+    if rotate:
+        image = image.rotate(rotate, expand=True)
+
+    if transpose:
+        image = image.transpose(transpose)
+
+    return image
+
 def create_preview(filename, image, size):
     """Creates a smaller static image, used for thumbnail and previews"""
     # Thumbnail starts here
@@ -45,8 +80,13 @@ def create_preview(filename, image, size):
     # thumbfilename = '%s%s.%s' % (prefix, uid, ext)
     # thumbpath = fspath_for_name(thumbfilename)
 
+    exif = image._getexif()
     image = image.copy()
+
     image.thumbnail((size, size), PIL.Image.ANTIALIAS)
+    # Transpose after thumbnail (performance over quality)
+    image = exif_transpose(image, exif)
+
     with io.open(filename, 'wb+') as output:
         if ext == "jpg":
             # In case of indexed palette, JPEG mut be converted to RGB
