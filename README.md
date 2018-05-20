@@ -54,7 +54,7 @@ containing the local python files)
 
 ### Configuration
 
-The default configuration is [pymgur.default.ini](pymgur.default.ini) and
+The default configuration is [pymgur.default.ini](pymgur/pymgur.default.ini) and
 should be appropriately documented.
 
 Modifying it should work, but you'd probably be better off by making a copy,
