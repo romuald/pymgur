@@ -96,8 +96,8 @@ from . import views  # noqa
 from .template_filters import noop  # noqa
 
 def main():
-    """Dev runner"""
+    """Standalone runner"""
 
     if app.config['PROXIES'] > 0:
         app.wsgi_app = ProxyFix(app.wsgi_app, app.config['PROXIES'])
-    app.run(use_reloader=True, threaded=True)
+    app.run(use_reloader=True, threaded=True, load_dotenv=False)
