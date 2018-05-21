@@ -6,7 +6,8 @@ import base64
 from shutil import copyfileobj
 from datetime import datetime
 
-import multiprocessing.dummy as mp
+import multiprocessing
+import multiprocessing.dummy
 
 import PIL.Image
 import werkzeug.exceptions
@@ -94,8 +95,9 @@ def post_images():
         with app.test_request_context():
             return publish_image(image)
 
-    if len(todo) > 1:
-        pool = mp.Pool()
+    if len(todo) > 1 and multiprocessing.cpu_count() > 1:
+        # .dummy is threaded multiprocessing
+        pool = multiprocessing.dummy.Pool()
         images = [img for img in  pool.map(threadwork, todo) if img]
     else:
         images = [img for img in  map(publish_image, todo) if img]
