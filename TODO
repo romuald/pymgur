@@ -1,3 +1,2 @@
 - admin to list/delete images
-- handle JPEG rotation in thumbnails
 - try multithreaded image handling
