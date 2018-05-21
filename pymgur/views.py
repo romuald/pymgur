@@ -6,6 +6,7 @@ import base64
 from shutil import copyfileobj
 from datetime import datetime
 
+import multiprocessing.dummy as mp
 
 import PIL.Image
 import werkzeug.exceptions
@@ -50,22 +51,28 @@ def post_images():
         ttl = min(ttl, parse_timespec(app.config['MAX_TTL']))
 
     images = []
+    todo = []
 
     for file in request.files.values():
-        if len(images) > app.config['MAX_IMAGES']:
+        if len(todo) > app.config['MAX_IMAGES']:
             break
 
+        if precheck_image(file.stream):
+            todo.append(file.stream)
+        """
         image = publish_image(file.stream)
         if image:
             print("Created image %s" % image.uid)
             images.append(image)
+        """
 
     b64i = 'base64,'
     for name, value in request.form.items():
-        if len(images) > app.config['MAX_IMAGES']:
+        if len(todo) > app.config['MAX_IMAGES']:
             break
 
         if name.startswith('bimage') and value:
+            stream = None
             try:
                 if b64i in value:
                     # data:xx/xxx;base64,
@@ -74,10 +81,24 @@ def post_images():
             except Exception:
                 raise
 
+            if precheck_image(stream):
+                todo.append(stream)
+            """
             image = publish_image(stream)
             if image:
                 print("Created image %s from base64" % image.uid)
                 images.append(image)
+            """
+
+    def threadwork(image):
+        with app.test_request_context():
+            return publish_image(image)
+
+    if len(todo) > 1:
+        pool = mp.Pool()
+        images = [img for img in  pool.map(threadwork, todo) if img]
+    else:
+        images = [img for img in  map(publish_image, todo) if img]
 
     if len(images) > 1:
         imageset = create_imageset()
@@ -131,16 +152,25 @@ def post_images():
     # set secret in session cookie to show it later
     for image in images:
         res.set_cookie('pymgur-secret.%s' % image.uid, image.secret)
+
     return res
 
+def precheck_image(stream):
+    """
+    Quick check to exclude empty "files" before processing
+    """
+    if not stream:
+        return
 
-def publish_image(stream):
     if len(stream.read(1)) == 0:
         # Empty stream
-        return None
+        return False
 
     stream.seek(0)
 
+    return True
+
+def publish_image(stream):
     try:
         pimage = PIL.Image.open(stream)
     except Exception as exc:
