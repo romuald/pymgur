@@ -97,13 +97,13 @@ def create_preview(filename, image, size):
             image = image.convert('RGB')
             image.save(output, quality=app.config['JPEG_QUALITY'],
                        optimize=True, progressive=True)
-        else:  # png
+        else:
+            # PNG
             image.save(output, optimize=True)
 
     # thumbnail.close()
     image.close()
     return filename
-    return output, ext
 
 
 def request_wants_json(request):
