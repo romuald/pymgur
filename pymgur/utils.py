@@ -80,7 +80,11 @@ def create_preview(filename, image, size):
     # thumbfilename = '%s%s.%s' % (prefix, uid, ext)
     # thumbpath = fspath_for_name(thumbfilename)
 
-    exif = image._getexif()
+    if hasattr(image, '_getexif'):
+        exif = image._getexif()
+    else:
+        exif = None
+
     image = image.copy()
 
     image.thumbnail((size, size), PIL.Image.ANTIALIAS)
