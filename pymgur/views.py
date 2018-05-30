@@ -21,7 +21,9 @@ from .utils import (create_preview, request_wants_json,
                     parse_timespec, cleanup_images)
 
 
-FORMATS = {'PNG', 'JPEG', 'GIF'}
+# MPO is analog to JPEG and is used by certain cameras with the JPEG extension
+# https://en.wikipedia.org/wiki/JPEG#JPEG_Multi-Picture_Format
+FORMATS = {'PNG', 'JPEG', 'MPO', 'GIF'}
 
 
 def post_images():
@@ -206,8 +208,8 @@ def publish_image(stream):
     stream.seek(0)
     ext = pimage.format.lower()
 
-    # keep filenames consistant
-    if ext == 'jpeg':
+    # keep filenames consistent
+    if ext in ('jpeg', 'mpo'):
         ext = 'jpg'
 
     fullname = os.path.join(basedir, '%s.%s' % (image.uid, ext))
