@@ -36,6 +36,10 @@ def image_has_transparency(image):
     return True
 
 
+def get_exif(image):
+    """Retrieve EXIF data (or not) from a PIL.Image"""
+    return image._getexif() if hasattr(image, '_getexif') else None
+
 def exif_transpose(image, exif_data):
     """Rotate / transpose a thumbnal according to the EXIF metadata
 
@@ -71,6 +75,26 @@ def exif_transpose(image, exif_data):
 
     return image
 
+def image_dimentions(image):
+    """
+    Retrieve the image dimentions, transposing width/height according to the
+    EXIF metadata
+
+    :type image: PIL.Image
+
+    :return: tuple (width, height)
+    """
+
+    width, height = image.width, image.height
+
+    exif = image._getexif()
+    orientation = exif and exif.get(274)  # False if no exif data
+
+    if orientation in (5, 6, 7, 8):
+        width, height = height, width
+
+    return width, height
+
 def create_preview(filename, image, size):
     """Creates a smaller static image, used for thumbnail and previews"""
     # Thumbnail starts here
@@ -80,10 +104,8 @@ def create_preview(filename, image, size):
     # thumbfilename = '%s%s.%s' % (prefix, uid, ext)
     # thumbpath = fspath_for_name(thumbfilename)
 
-    if hasattr(image, '_getexif'):
-        exif = image._getexif()
-    else:
-        exif = None
+    # Get EXIF from original image (EXIF data is not copied)
+    exif = get_exif(image)
 
     image = image.copy()
 
@@ -101,7 +123,6 @@ def create_preview(filename, image, size):
             # PNG
             image.save(output, optimize=True)
 
-    # thumbnail.close()
     image.close()
     return filename
 

@@ -18,7 +18,7 @@ from flask import request, redirect, url_for, abort, render_template, \
 from . import app
 from .datastore import Picture, create_imageset, get_db
 from .utils import (create_preview, request_wants_json,
-                    parse_timespec, cleanup_images)
+                    parse_timespec, cleanup_images, image_dimentions)
 
 
 # MPO is analog to JPEG and is used by certain cameras with the JPEG extension
@@ -27,6 +27,7 @@ FORMATS = {'PNG', 'JPEG', 'MPO', 'GIF'}
 
 
 def post_images():
+
     api = not request.form.get('from_web')
     xhr = 'X-From-XHR' in request.headers
     if api:
@@ -195,8 +196,7 @@ def publish_image(stream):
 
     image = Picture.new()
 
-    image.width = pimage.width
-    image.height = pimage.height
+    image.width, image.height = image_dimentions(pimage)
 
     basedir = os.path.join(app.config['DATADIR'], image.uid[:2])
     try:
