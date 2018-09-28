@@ -1,28 +1,38 @@
 import re
+import os
 import sqlite3
 from contextlib import closing
 from datetime import datetime, timedelta
+from glob import glob
 import random
-import os.path
 
 from flask import g
 
 from . import app
+from flask import current_app
 
+app._db_upgraded = False
+
+DB_VERSION = 1
 
 def connect_db():
     """Connects to the specific database."""
     dbpath = os.path.join(app.config['DATADIR'], 'pymgur.db')
     create_db = not os.path.exists(dbpath)
 
-    conn = sqlite3.connect(dbpath, detect_types=sqlite3.PARSE_DECLTYPES)
-    conn.row_factory = sqlite3.Row
+    db = sqlite3.connect(dbpath, detect_types=sqlite3.PARSE_DECLTYPES)
+    db.row_factory = sqlite3.Row
 
     # conn.execute('PRAGMA FOREIGN KEYS = ON;')
 
     if create_db:
-        init_db()
-    return conn
+        init_db(db)
+
+    if not app._db_upgraded:
+        upgrade_db(db)
+        app._db_upgraded = True
+
+    return db
 
 
 def get_db():
@@ -47,13 +57,56 @@ def initdb_command():
     init_db()
 
 
-def init_db():
+def init_db(db):
     """Initializes the database."""
     # XXX Use locking mechanism to handle concurrent calls
-    db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
+    with app.open_resource('schema/schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
+
+
+def upgrade_db(db):
+    ## XXX there is a concurrency issue on the migration, as .executescript()
+    # will commit transactions and may allow other threads to execute the same
+    # upgrade
+    cur = db.cursor()
+    cur.execute('begin immediate transaction')
+    try:
+        cur.execute('SELECT version FROM schema_version')
+        version,  = cur.fetchone()
+    except sqlite3.OperationalError:
+        version = -1
+    except Exception:
+        db.rollback()
+        raise
+
+    if version >= DB_VERSION:
+        return
+
+    def vmatch(path):
+        match = re.match('([0-9]+)_', os.path.split(path)[-1])
+        if match:
+           return int(match.group(1)), path
+
+    pattern = os.path.join(app.root_path, 'schema/*.sql')
+    pairs = sorted(pair for pair in map(vmatch, glob(pattern)) if pair)
+
+    for number, file in pairs:
+        if number <= version:
+            continue
+
+        with open(file) as script:
+            #
+            try:
+                cur.executescript(script.read())
+                cur.execute('DELETE FROM schema_version')
+                cur.execute('INSERT INTO schema_version VALUES (:version)',
+                            {'version': number})
+            except Exception:
+                db.rollback()
+                raise
+            else:
+                db.commit()
 
 
 def gen_uid(length=8):
