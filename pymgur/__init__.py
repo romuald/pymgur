@@ -87,13 +87,28 @@ def configure():
     # TTLS is a list
     values['TTLS'] = [value.strip() for value in values['TTLS'].split(',')]
 
+    from .datastore import get_db
+
+
     app.config.update(values)
+
+
+    with app.app_context():
+        db = get_db()
+
+        cur = db.cursor()
+        cur.execute('SELECT secret FROM session_secret LIMIT 1')
+        secret, = cur.fetchone()
+
+        app.config['SECRET_KEY'] = secret
 
 
 configure()
 
+
 from . import datastore  # noqa
 from . import views  # noqa
+from . import admin  # noqa
 from .template_filters import noop  # noqa
 
 def main():

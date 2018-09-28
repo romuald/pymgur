@@ -5,6 +5,9 @@ import errno
 import base64
 from shutil import copyfileobj
 from datetime import datetime
+from functools import wraps
+from crypt import crypt
+from hmac import compare_digest
 
 import multiprocessing
 import multiprocessing.dummy
@@ -12,7 +15,7 @@ import multiprocessing.dummy
 import PIL.Image
 import werkzeug.exceptions
 from flask import request, redirect, url_for, abort, render_template, \
-    jsonify, send_from_directory, make_response
+    jsonify, send_from_directory, make_response, session
 
 
 from . import app
