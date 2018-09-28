@@ -1,5 +1,3 @@
-BEGIN IMMEDIATE TRANSACTION;
-
 CREATE TABLE session_secret (
 	id INTEGER PRIMARY KEY,
 	secret BLOB
@@ -24,5 +22,3 @@ INSERT INTO session_secret VALUES (1,
 	CHAR(RANDOM() % 256) || CHAR(RANDOM() % 256) || CHAR(RANDOM() % 256) ||
 	CHAR(RANDOM() % 256) || CHAR(RANDOM() % 256) || CHAR(RANDOM() % 256)
 );
-
--- COMMIT;

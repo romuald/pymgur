@@ -70,7 +70,6 @@ def upgrade_db(db):
     # will commit transactions and may allow other threads to execute the same
     # upgrade
     cur = db.cursor()
-    cur.execute('begin immediate transaction')
     try:
         cur.execute('SELECT version FROM schema_version')
         version,  = cur.fetchone()
@@ -84,6 +83,7 @@ def upgrade_db(db):
         return
 
     def vmatch(path):
+        # path of SQL file -> (number, path)
         match = re.match('([0-9]+)_', os.path.split(path)[-1])
         if match:
            return int(match.group(1)), path
@@ -96,7 +96,6 @@ def upgrade_db(db):
             continue
 
         with open(file) as script:
-            #
             try:
                 cur.executescript(script.read())
                 cur.execute('DELETE FROM schema_version')

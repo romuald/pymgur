@@ -1,7 +1,1 @@
-BEGIN IMMEDIATE TRANSACTION;
-
 CREATE TABLE schema_version (version INTEGER PRIMARY KEY);
-
--- INSERT INTO schema_version VALUES (0);
-
--- COMMIT;
