@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title>Admin</title>
+</head>
+<body>
+	<h2>No password is set</h2>
+	<p>
+	Admin password is not currently set. <br>
+	Password should be set in your configuration file, under the <code>ADMIN_PASSWORD</code> key.<br>
+	You can set it up in plaintext (but it <b>must not</b> start with a dollar sign), or use the a <code>crypt()</code>'d version of it.<br>
+	</p>
+	<p>
+	You can use the following form to crypt any password to copy/paste it in your configuration file
+	</p>
+	<form method="post" action="{{ url_for('admin_nopass') }}">
+		<input type="text" name="password">
+		<input type="submit" value="Submit">
+	</form>
+	{% if hashed %}
+	<hr>
+	<p>
+	Password to paste in configuration:
+	<pre>{{ hashed }}</pre>
+	</p>
+	{% endif %}
+</body>
+</html>
