@@ -218,6 +218,8 @@ function HomeLoaded() {
 
 	form.addEventListener('submit', formSubmit);
 
+	document.addEventListener("paste", pasteImage, false)
+
 	/* Setup image progresion loader  */
 	var imgs = document.querySelectorAll('#thumbnails img');
 	var loader = document.querySelector('#loader');
@@ -237,6 +239,22 @@ function HomeLoaded() {
 		loader.style.width = ((++loaded / imgs.length) * 100) + '%';
 	}
 }
+
+function imageFromReader(e) {
+	// Creates a new image from a FileReader onload event
+	var row = findEmptyRow();
+	if ( row === null ) {
+		return;
+	}
+
+	var input = row.querySelector('input[type*="file"]');
+	var binput = row.querySelector('input[name*="bimage"]');
+
+	input.value = null;
+	binput.value = e.target.result;
+	updateRowPreview(binput);
+}
+
 
 function dragEnter(e) {
 	e.stopPropagation();
@@ -274,20 +292,25 @@ function dropImage(e) {
 			continue;
 		}
 		var reader = new FileReader();
-		reader.onload = function(e) {
-			var row = findEmptyRow();
-			if ( row === null ) {
-				return;
-			}
-
-			var input = row.querySelector('input[type*="file"]');
-			var binput = row.querySelector('input[name*="bimage"]');
-
-			input.value = null;
-			binput.value = e.target.result
-			updateRowPreview(binput);
-		};
+		reader.onload = imageFromReader;
 		reader.readAsDataURL(file);
+	}
+}
+
+function pasteImage(e) {
+	// Keep event bubbling
+	var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if ( item.kind !== "file" || !item.type.startsWith('image/') ) {
+			continue;
+		}
+
+		var blob = item.getAsFile();
+		var reader = new FileReader();
+		reader.onload = imageFromReader;
+		reader.readAsDataURL(blob);
 	}
 }
 
