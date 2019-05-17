@@ -87,7 +87,10 @@ def image_dimentions(image):
 
     width, height = image.width, image.height
 
-    exif = image._getexif()
+    # Attribute may not exit
+    get_exif = getattr(image, "_getexif", lambda: None)
+
+    exif = get_exif()
     orientation = exif and exif.get(274)  # False if no exif data
 
     if orientation in (5, 6, 7, 8):
