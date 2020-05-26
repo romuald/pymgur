@@ -33,7 +33,7 @@ def post_images():
     if api:
         # API version: no private arg = default setting
         try:
-            private = bool(request.form['private'])
+            private = bool(int(request.form['private']))
         except (KeyError, ValueError):
             private = app.config['DEFAULT_PRIVATE']
 
