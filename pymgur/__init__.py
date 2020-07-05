@@ -5,7 +5,11 @@ import configparser
 from pprint import pprint  # noqa
 
 from flask import Flask
-from werkzeug.contrib.fixers import ProxyFix
+
+try:
+    from werkzeug.middleware.proxy_fix import ProxyFix
+except ImportError:
+    from werkzeug.contrib.fixers import ProxyFix
 
 
 app = application = Flask(__name__)
