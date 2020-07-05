@@ -176,8 +176,21 @@ function formSubmit(ev) {
 
 	submit.disabled = true;
 	submit.value = submit.getAttribute('alt-uploading');
-	xhr.send(new FormData(this));
 
+	var fd = new FormData(this);
+	for ( var pair of fd.entries() ) {
+		// Convert base64 data to binary data to reduce transfer size
+		var key = pair[0], value = pair[1];
+
+		if ( /bimage/.test(key) && value.length > 0 ) {
+			try {
+				var blob = dataURLToBlob(value);
+				fd.set(key, blob);
+			} catch (e) {}
+		}
+	}
+
+	xhr.send(fd);
 	ev.preventDefault();
 }
 
@@ -252,9 +265,22 @@ function imageFromReader(e) {
 
 	input.value = null;
 	binput.value = e.target.result;
+
 	updateRowPreview(binput);
 }
 
+function dataURLToBlob(data) {
+	var byteString = atob(data.split(',')[1]);
+	var mimeString = data.split(',')[0].split(':')[1].split(';')[0]
+
+	var ab = new ArrayBuffer(byteString.length);
+	var ia = new Uint8Array(ab);
+
+	for (var i = 0; i < byteString.length; i++) {
+		ia[i] = byteString.charCodeAt(i);
+	}
+	return new Blob([ab], {type: mimeString});
+}
 
 function dragEnter(e) {
 	e.stopPropagation();
