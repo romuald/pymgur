@@ -105,5 +105,6 @@ def main():
 
     if app.config['PROXIES'] > 0:
         app.wsgi_app = ProxyFix(app.wsgi_app, app.config['PROXIES'])
-    app.run(use_reloader=app.config['AUTO_RELOAD'],
+    app.run(host=app.config['HOST'],
+            use_reloader=app.config['AUTO_RELOAD'],
             threaded=True, load_dotenv=False)
