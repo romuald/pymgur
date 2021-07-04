@@ -43,6 +43,11 @@ header a:hover {
 	border-width: 0 1px;
 	padding: 0 16px;
 }
+@media screen and (max-width: 610px) {
+	#upload-form {
+		border-width: 0;
+	}
+}
 
 .hidden {
 	display: none;
