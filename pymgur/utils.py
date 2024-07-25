@@ -112,7 +112,12 @@ def create_preview(filename, image, size):
 
     image = image.copy()
 
-    image.thumbnail((size, size), PIL.Image.ANTIALIAS)
+    try:
+        sampling = PIL.Image.ANTIALIAS
+    except AttributeError:
+        sampling = PIL.Image.LANCZOS
+
+    image.thumbnail((size, size), sampling)
     # Transpose after thumbnail (performance over quality)
     image = exif_transpose(image, exif)
 
